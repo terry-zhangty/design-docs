@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mock Control CLI - Option Comparison</title>
+<title>Mock Control CLI — Implementation Roadmap</title>
 <style>
   :root {
     --bg: #0f172a;
     --surface: #1e293b;
+    --surface2: #162032;
     --border: #334155;
     --text: #e2e8f0;
     --muted: #94a3b8;
-    --accent-a: #38bdf8;
-    --accent-b: #a78bfa;
+    --accent1: #38bdf8;
+    --accent2: #a78bfa;
     --green: #4ade80;
     --red: #f87171;
     --yellow: #fbbf24;
+    --orange: #fb923c;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -25,285 +27,84 @@
     line-height: 1.6;
     padding: 2rem;
   }
-  .container { max-width: 1200px; margin: 0 auto; }
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 0.5rem;
-  }
-  .subtitle {
-    text-align: center;
-    color: var(--muted);
-    margin-bottom: 2rem;
-    font-size: 0.95rem;
+  .container { max-width: 960px; margin: 0 auto; }
+  a { color: var(--accent1); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    background: rgba(56,189,248,0.1);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.88em;
+    color: var(--accent1);
   }
 
-  /* Cards side by side */
-  .cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .header .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 0.75rem; }
+  .header .meta {
+    display: flex;
+    justify-content: center;
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    font-size: 0.82rem;
+    color: var(--muted);
   }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    position: relative;
+  .header .meta span { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+  /* Section headings */
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .card.recommended {
-    border-color: var(--accent-a);
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
-  }
-  .badge {
-    position: absolute;
-    top: -10px;
-    right: 16px;
-    background: var(--accent-a);
+  .section-title .num {
+    background: var(--accent1);
     color: var(--bg);
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .card h2 {
-    font-size: 1.3rem;
-    margin-bottom: 0.25rem;
-  }
-  .card h2 .label-a { color: var(--accent-a); }
-  .card h2 .label-b { color: var(--accent-b); }
-  .card .tagline {
-    color: var(--muted);
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .metric-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
-  }
-  .metric-row:last-child { border-bottom: none; }
-  .metric-label { color: var(--muted); }
-  .metric-value { font-weight: 600; }
+  section { margin-bottom: 2.5rem; }
 
-  /* Pro/Con lists */
-  .pro-con { margin-top: 1rem; }
-  .pro-con h3 {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.5rem;
-    color: var(--muted);
-  }
-  .pro-con ul {
-    list-style: none;
-    padding: 0;
-  }
-  .pro-con li {
-    padding: 0.3rem 0;
-    font-size: 0.88rem;
-    padding-left: 1.4rem;
-    position: relative;
-  }
-  .pro-con li::before {
-    position: absolute;
-    left: 0;
-    font-weight: 700;
-  }
-  .pros li::before { content: "+"; color: var(--green); }
-  .cons li::before { content: "-"; color: var(--red); }
-
-  /* Code blocks */
-  .code-section {
-    margin-top: 1rem;
-  }
-  .code-section h3 {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.5rem;
-    color: var(--muted);
-  }
-  pre {
-    background: #0c1222;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-    font-size: 0.82rem;
-    line-height: 1.5;
-    color: #c9d1d9;
-  }
-  pre .comment { color: #6a737d; }
-  pre .cmd { color: var(--green); }
-  pre .flag { color: var(--yellow); }
-  pre .prompt { color: var(--accent-a); }
-  pre .status { color: var(--muted); font-style: italic; }
-
-  /* Comparison table */
-  .comparison-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--surface);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-  }
-  .comparison-table th,
-  .comparison-table td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
-  }
-  .comparison-table th {
-    background: #162032;
-    color: var(--muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-  }
-  .comparison-table td:first-child {
-    color: var(--muted);
-    font-weight: 500;
-  }
-  .col-a { color: var(--accent-a); }
-  .col-b { color: var(--accent-b); }
-  .check { color: var(--green); }
-  .cross { color: var(--red); }
-  .partial { color: var(--yellow); }
-
-  /* Architecture diagram (ASCII art) */
-  .arch-section {
-    margin-bottom: 2rem;
-  }
-  .arch-section h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  .arch-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-  .arch-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-  }
-  .arch-card h3 {
-    font-size: 0.95rem;
-    margin-bottom: 0.75rem;
-  }
-  .arch-card pre {
-    font-size: 0.78rem;
-    line-height: 1.4;
-  }
-
-  /* Footer */
-  .footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.8rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-  }
-
-  /* Incremental build section */
-  .incremental-section {
-    margin-bottom: 2rem;
-  }
-  .incremental-section > h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  .incremental-banner {
-    background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(167,139,250,0.1));
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .incremental-banner h3 {
-    color: var(--accent-a);
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  .incremental-banner p {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  /* Timeline */
-  .timeline {
-    position: relative;
-    padding-left: 2rem;
-    margin-bottom: 1.5rem;
-  }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: linear-gradient(to bottom, var(--accent-a), var(--accent-b));
-  }
-  .timeline-item {
-    position: relative;
-    margin-bottom: 1.5rem;
+  /* Context block */
+  .context-block {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1.25rem;
+    margin-bottom: 1rem;
   }
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -1.65rem;
-    top: 1.3rem;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 2px solid var(--bg);
-  }
-  .timeline-item.phase-a::before { background: var(--accent-a); }
-  .timeline-item.phase-b::before { background: var(--accent-b); }
-  .timeline-item h4 {
-    font-size: 0.95rem;
-    margin-bottom: 0.3rem;
-  }
-  .timeline-item .phase-time {
+  .context-block h3 {
+    font-size: 0.88rem;
     color: var(--muted);
-    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     margin-bottom: 0.5rem;
   }
-  .timeline-item ul {
-    list-style: none;
-    padding: 0;
-  }
-  .timeline-item li {
-    padding: 0.2rem 0;
-    font-size: 0.85rem;
-    padding-left: 1.2rem;
-    position: relative;
+  .context-block p, .context-block li {
+    font-size: 0.9rem;
     color: var(--text);
   }
-  .timeline-item li::before {
+  .context-block ul { list-style: none; padding: 0; }
+  .context-block li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
+  .context-block li::before {
     content: '>';
     position: absolute;
     left: 0;
@@ -311,146 +112,391 @@
     font-weight: 700;
   }
 
-  /* File tree */
-  .file-tree {
+  /* Roadmap timeline */
+  .roadmap {
+    position: relative;
+    padding-left: 3rem;
+  }
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent1) 0%, var(--accent1) 50%, var(--accent2) 50%, var(--accent2) 100%);
+    border-radius: 2px;
+  }
+  .phase {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  .phase-dot {
+    position: absolute;
+    left: -2.55rem;
+    top: 0.3rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    z-index: 1;
+  }
+  .phase-1 .phase-dot { background: var(--accent1); }
+  .phase-2 .phase-dot { background: var(--accent2); }
+
+  .phase-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 1.25rem;
   }
-  .file-tree h3 {
-    font-size: 0.95rem;
+  .phase-1 .phase-card { border-left: 3px solid var(--accent1); }
+  .phase-2 .phase-card { border-left: 3px solid var(--accent2); }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .phase-header h3 { font-size: 1.05rem; font-weight: 600; }
+  .phase-1 .phase-header h3 { color: var(--accent1); }
+  .phase-2 .phase-header h3 { color: var(--accent2); }
+  .phase-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tag-time { background: rgba(56,189,248,0.15); color: var(--accent1); }
+  .tag-optional { background: rgba(167,139,250,0.15); color: var(--accent2); }
+
+  .phase-desc {
+    color: var(--muted);
+    font-size: 0.88rem;
     margin-bottom: 0.75rem;
   }
-  .file-tree pre {
-    font-size: 0.82rem;
-    line-height: 1.6;
-  }
-  .file-tree .shared { color: var(--green); }
-  .file-tree .phase-a-file { color: var(--accent-a); }
-  .file-tree .phase-b-file { color: var(--accent-b); }
-  .file-tree .build-file { color: var(--yellow); }
-  .file-tree .note { color: var(--muted); font-style: italic; }
 
-  /* Arrow connector */
-  .arrow-connector {
-    text-align: center;
-    font-size: 1.5rem;
+  /* Task checklist */
+  .task-list { list-style: none; padding: 0; }
+  .task-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.6rem;
+    position: relative;
+    font-size: 0.88rem;
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+  }
+  .task-list li:last-child { border-bottom: none; }
+  .task-list li::before {
+    position: absolute;
+    left: 0;
+    font-size: 0.85rem;
+  }
+  .task-list li.todo::before { content: '[ ]'; color: var(--muted); font-family: monospace; }
+  .task-list li.done::before { content: '[x]'; color: var(--green); font-family: monospace; }
+
+  /* Deliverables */
+  .deliverables {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .deliverables h4 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     color: var(--muted);
-    margin: 0.5rem 0;
-    letter-spacing: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+  .deliverable-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    margin: 2px 4px 2px 0;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .dt-binary { background: rgba(74,222,128,0.12); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+  .dt-lib { background: rgba(56,189,248,0.12); color: var(--accent1); border: 1px solid rgba(56,189,248,0.25); }
+  .dt-config { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+
+  /* Code blocks */
+  pre {
+    background: #0c1222;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #c9d1d9;
+    margin-top: 0.75rem;
+  }
+  pre .comment { color: #6a737d; }
+  pre .cmd { color: var(--green); }
+  pre .flag { color: var(--yellow); }
+  pre .prompt { color: var(--accent1); }
+  pre .status { color: var(--muted); font-style: italic; }
+  pre .shared { color: var(--green); }
+  pre .file-a { color: var(--accent1); }
+  pre .file-b { color: var(--accent2); }
+  pre .build-f { color: var(--yellow); }
+  pre .note { color: var(--muted); font-style: italic; }
+
+  /* Architecture */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .arch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .arch-card h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Quick reference table */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .ref-table th, .ref-table td {
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .ref-table th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  .ref-table td:first-child { color: var(--muted); }
+
+  /* Usage demo */
+  .usage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .usage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .usage-card h3 { font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .usage-card .label-1 { color: var(--accent1); }
+  .usage-card .label-2 { color: var(--accent2); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
   }
 
   @media (max-width: 768px) {
-    .cards, .arch-grid { grid-template-columns: 1fr; }
+    .arch-grid, .usage-grid { grid-template-columns: 1fr; }
     body { padding: 1rem; }
+    .roadmap { padding-left: 2.5rem; }
+    .phase-dot { left: -2.05rem; }
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Mock Control CLI Tool &mdash; Option Comparison</h1>
-  <p class="subtitle">Two approaches for sending MockControlTrigger commands without the APOV UI<br>
-  <strong style="color: var(--accent-a);">Recommended:</strong> Build A first, then extend to B &mdash; they share the same core</p>
 
-  <!-- ===== Side-by-Side Cards ===== -->
-  <div class="cards">
+  <!-- ===== Header ===== -->
+  <div class="header">
+    <h1>Mock Control CLI &mdash; Implementation Roadmap</h1>
+    <p class="subtitle">A two-phase plan for building a CLI tool to send MockControlTrigger commands</p>
+    <div class="meta">
+      <span>Author: Tianyi Zhang</span>
+      <span>Date: Feb 12, 2026</span>
+      <span>Status: Planning</span>
+    </div>
+  </div>
 
-    <!-- Option A -->
-    <div class="card recommended">
-      <div class="badge">Start Here</div>
-      <h2><span class="label-a">Phase 1</span> &mdash; One-Shot Tool</h2>
-      <p class="tagline">Run once, send one command, exit. Chain in scripts. <strong>Build first.</strong></p>
+  <!-- ===== 1. Background ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">1</span> Background</h2>
+    <div class="context-block">
+      <h3>Problem</h3>
+      <p>The Mock Control component in <code>onboard_main</code> accepts commands via the
+        <code>mock_control_trigger</code> AOS/DDS topic. Currently, the only way to send these commands
+        is through the APOV native UI, which cannot be operated remotely or scripted.</p>
+    </div>
+    <div class="context-block">
+      <h3>Goal</h3>
+      <p>Build a command-line tool that can publish <code>MockControlTrigger</code> messages to the DDS topic,
+        enabling scripted testing, remote operation, and CI/CD integration.</p>
+    </div>
+    <div class="context-block">
+      <h3>Key Interfaces</h3>
+      <ul>
+        <li><code>MockControlTrigger</code> &mdash; protobuf message for sending commands (action, mode, actuator targets)</li>
+        <li><code>MockControlStatus</code> &mdash; protobuf message published by the component with current state</li>
+        <li><code>mock_control_trigger</code> &mdash; AOS/DDS topic name (publish)</li>
+        <li><code>mock_control_status</code> &mdash; AOS/DDS topic name (subscribe)</li>
+      </ul>
+    </div>
+  </section>
 
-      <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">~1 hour</span></div>
-      <div class="metric-row"><span class="metric-label">Code Size</span><span class="metric-value">~150&ndash;200 lines</span></div>
-      <div class="metric-row"><span class="metric-label">Complexity</span><span class="metric-value">Low</span></div>
-      <div class="metric-row"><span class="metric-label">Interactivity</span><span class="metric-value">None</span></div>
-      <div class="metric-row"><span class="metric-label">Scriptability</span><span class="metric-value">Excellent</span></div>
-      <div class="metric-row"><span class="metric-label">Live Feedback</span><span class="metric-value">No</span></div>
+  <!-- ===== 2. Code Structure ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">2</span> Code Structure</h2>
+    <pre><span class="build-f">txm/module/canbus/tool/mock_control_cli/</span>
+  <span class="build-f">BUILD</span>                             <span class="note"># Bazel build targets</span>
+  <span class="shared">mock_control_sender.h</span>             <span class="note"># Shared core: message builder + publisher</span>
+  <span class="shared">mock_control_sender.cc</span>            <span class="note"># AOS node, trigger construction, DDS publish</span>
+  <span class="file-a">mock_ctl_main.cc</span>                  <span class="note"># Phase 1: one-shot CLI entry point</span>
+  <span class="file-b">interactive_mock_ctl_main.cc</span>      <span class="note"># Phase 2: REPL entry point (added later)</span></pre>
+    <p style="color:var(--muted); font-size:0.82rem; margin-top:0.5rem;">
+      <span style="color:var(--green);">Green</span> = shared core &nbsp;&bull;&nbsp;
+      <span style="color:var(--accent1);">Blue</span> = Phase 1 &nbsp;&bull;&nbsp;
+      <span style="color:var(--accent2);">Purple</span> = Phase 2 &nbsp;&bull;&nbsp;
+      <span style="color:var(--yellow);">Yellow</span> = build config
+    </p>
+  </section>
 
-      <div class="pro-con">
-        <h3>Pros</h3>
-        <ul class="pros">
-          <li>Fast to implement</li>
-          <li>Highly scriptable &amp; composable</li>
-          <li>Simple codebase, easy to maintain</li>
-          <li>Follows existing codebase patterns</li>
-          <li>Great for CI/CD pipelines</li>
-        </ul>
-        <h3>Cons</h3>
-        <ul class="cons">
-          <li>No real-time status feedback</li>
-          <li>DDS startup overhead per invocation</li>
-          <li>Multiple runs needed for sequences</li>
-        </ul>
+  <!-- ===== 3. Roadmap ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">3</span> Implementation Roadmap</h2>
+
+    <div class="roadmap">
+      <!-- Phase 1 -->
+      <div class="phase phase-1">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <div class="phase-header">
+            <h3>Phase 1 &mdash; One-Shot CLI Tool</h3>
+            <div>
+              <span class="phase-tag tag-time">~1 hour</span>
+            </div>
+          </div>
+          <p class="phase-desc">Build a fire-and-forget binary that sends a single <code>MockControlTrigger</code>
+            message and exits. Immediately usable for scripting and manual testing.</p>
+
+          <ul class="task-list">
+            <li class="todo">Implement <code>MockControlSender</code> class (shared core):
+              AOS <code>ComponentNode</code> init, topic publisher, message builder</li>
+            <li class="todo">Implement <code>mock_ctl_main.cc</code>: parse flags, call sender, exit</li>
+            <li class="todo">Define CLI flags: <code>--action</code>, <code>--mode</code>,
+              <code>--throttle</code>, <code>--brake</code>, <code>--steer</code>, <code>--profile</code></li>
+            <li class="todo">Write <code>BUILD</code> target for <code>mock_ctl</code> binary</li>
+            <li class="todo">Test with <code>onboard_main</code> in mock control mode on vcan</li>
+            <li class="todo">Verify actuator response via APOV or <code>MockControlStatus</code> logs</li>
+          </ul>
+
+          <div class="deliverables">
+            <h4>Deliverables</h4>
+            <span class="deliverable-tag dt-binary">mock_ctl</span>
+            <span class="deliverable-tag dt-lib">mock_control_sender.h/.cc</span>
+            <span class="deliverable-tag dt-config">BUILD</span>
+          </div>
+        </div>
       </div>
 
-      <div class="code-section">
-        <h3>Usage Example</h3>
-        <pre><span class="comment"># Switch driving mode to auto</span>
-<span class="cmd">mock_ctl</span> <span class="flag">--mode=auto</span>
+      <!-- Phase 2 -->
+      <div class="phase phase-2">
+        <div class="phase-dot"></div>
+        <div class="phase-card">
+          <div class="phase-header">
+            <h3>Phase 2 &mdash; Interactive REPL</h3>
+            <div>
+              <span class="phase-tag tag-optional">Optional</span>
+              <span class="phase-tag tag-time">+1&ndash;2 hours</span>
+            </div>
+          </div>
+          <p class="phase-desc">Extend the shared core with a persistent interactive CLI that includes
+            a command loop and live status display. Build only if interactive debugging proves valuable.</p>
 
-<span class="comment"># Start throttle signal at 50% with step profile</span>
-<span class="cmd">mock_ctl</span> <span class="flag">--start --throttle=0.5 --profile=step</span>
+          <ul class="task-list">
+            <li class="todo">Add REPL loop: readline, command parsing, dispatch to sender</li>
+            <li class="todo">Add DDS subscriber for <code>mock_control_status</code> on background thread</li>
+            <li class="todo">Implement live status formatter (throttle, brake, steer, mode display)</li>
+            <li class="todo">Implement command set: <code>mode</code>, <code>start</code>,
+              <code>stop</code>, <code>status</code>, <code>help</code>, <code>quit</code></li>
+            <li class="todo">Build <code>interactive_mock_ctl</code> binary</li>
+            <li class="todo">Test interactive session with live <code>onboard_main</code></li>
+          </ul>
 
-<span class="comment"># Stop all signals</span>
-<span class="cmd">mock_ctl</span> <span class="flag">--stop</span>
-
-<span class="comment"># Scripted sequence</span>
-<span class="cmd">mock_ctl</span> <span class="flag">--mode=auto</span> && sleep 2 && \
-<span class="cmd">mock_ctl</span> <span class="flag">--start --throttle=0.5</span></pre>
+          <div class="deliverables">
+            <h4>Deliverables</h4>
+            <span class="deliverable-tag dt-binary">interactive_mock_ctl</span>
+            <span class="deliverable-tag dt-lib">interactive_mock_ctl_main.cc</span>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Option B -->
-    <div class="card">
-      <h2><span class="label-b">Phase 2</span> &mdash; Interactive REPL</h2>
-      <p class="tagline">Extends Phase 1 with REPL loop and live status feedback.</p>
+  <!-- ===== 4. Usage Examples ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">4</span> Usage Examples</h2>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <h3><span class="label-1">Phase 1:</span> One-Shot Commands</h3>
+        <pre><span class="comment"># Switch to auto driving mode</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--action=ENABLE_ACTUATOR_OR_SWITCH</span> \
+         <span class="flag">--mode=AUTO_MODE</span>
 
-      <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">+1&ndash;2 hours (extends Phase 1)</span></div>
-      <div class="metric-row"><span class="metric-label">Code Size</span><span class="metric-value">~400&ndash;500 lines</span></div>
-      <div class="metric-row"><span class="metric-label">Complexity</span><span class="metric-value">Medium</span></div>
-      <div class="metric-row"><span class="metric-label">Interactivity</span><span class="metric-value">Full REPL</span></div>
-      <div class="metric-row"><span class="metric-label">Scriptability</span><span class="metric-value">Moderate</span></div>
-      <div class="metric-row"><span class="metric-label">Live Feedback</span><span class="metric-value">Yes</span></div>
+<span class="comment"># Start throttle at 50% (step profile)</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--action=START_SIGNAL</span> \
+         <span class="flag">--throttle=0.5</span> \
+         <span class="flag">--profile=step</span>
 
-      <div class="pro-con">
-        <h3>Pros</h3>
-        <ul class="pros">
-          <li>Interactive and intuitive UX</li>
-          <li>Real-time actuator status display</li>
-          <li>Excellent debugging experience</li>
-          <li>Single persistent process</li>
-          <li>Tab completion potential</li>
-        </ul>
-        <h3>Cons</h3>
-        <ul class="cons">
-          <li>More complex implementation</li>
-          <li>Harder to script (pipe commands)</li>
-          <li>Command parser adds surface area</li>
-          <li>More code to maintain</li>
-        </ul>
+<span class="comment"># Stop all active signals</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--action=STOP_SIGNAL</span>
+
+<span class="comment"># Scripted test sequence</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--mode=auto</span> && sleep 2 && \
+<span class="cmd">mock_ctl</span> <span class="flag">--action=START_SIGNAL</span> \
+         <span class="flag">--throttle=0.3</span> && \
+sleep 5 && \
+<span class="cmd">mock_ctl</span> <span class="flag">--action=STOP_SIGNAL</span></pre>
       </div>
-
-      <div class="code-section">
-        <h3>Usage Example</h3>
-        <pre><span class="cmd">$ mock_ctl_interactive</span>
+      <div class="usage-card">
+        <h3><span class="label-2">Phase 2:</span> Interactive Session</h3>
+        <pre><span class="cmd">$ interactive_mock_ctl</span>
 <span class="status">Mock Control CLI v1.0</span>
-<span class="status">Connected to mock_control_trigger topic.</span>
-<span class="status">Listening on mock_control_status...</span>
+<span class="status">Connected. Listening for status...</span>
 
 <span class="prompt">&gt;</span> mode auto
-  <span class="status">[OK] Switching to AUTO_MODE...</span>
-  <span class="status">Status: driving_mode=AUTO_MODE</span>
+  <span class="status">[OK] driving_mode=AUTO_MODE</span>
 
 <span class="prompt">&gt;</span> start throttle 0.5 step
-  <span class="status">[OK] Throttle: target=0.50, profile=STEP</span>
-  <span class="status">Status: throttle=0.50 [ACTIVE]</span>
+  <span class="status">[OK] throttle: 0.50 [STEP]</span>
+  <span class="status">[STATUS] throttle=0.50 brake=0.00</span>
+
+<span class="prompt">&gt;</span> start brake 0.3 ramp
+  <span class="status">[OK] brake: 0.30 [RAMP]</span>
+  <span class="status">[STATUS] throttle=0.50 brake=0.30</span>
 
 <span class="prompt">&gt;</span> status
-  <span class="status">Throttle: 0.50 [ACTIVE]</span>
-  <span class="status">Brake: 0.00 [IDLE]</span>
+  <span class="status">Mode: AUTO_MODE</span>
+  <span class="status">Throttle: 0.50 [ACTIVE/STEP]</span>
+  <span class="status">Brake: 0.30 [ACTIVE/RAMP]</span>
   <span class="status">Steer: 0.00 [IDLE]</span>
 
 <span class="prompt">&gt;</span> stop
@@ -459,164 +505,119 @@
 <span class="prompt">&gt;</span> quit</pre>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ===== Comparison Table ===== -->
-  <table class="comparison-table">
-    <thead>
-      <tr>
-        <th>Aspect</th>
-        <th class="col-a">Phase 1 &mdash; One-Shot</th>
-        <th class="col-b">Phase 2 &mdash; REPL (extends Phase 1)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Build Time</td>
-        <td class="col-a">~1 hour</td>
-        <td class="col-b">+1&ndash;2 hours (on top of Phase 1)</td>
-      </tr>
-      <tr>
-        <td>Code Size</td>
-        <td class="col-a">~150&ndash;200 lines</td>
-        <td class="col-b">~400&ndash;500 lines</td>
-      </tr>
-      <tr>
-        <td>Complexity</td>
-        <td class="col-a"><span class="check">&#9679;</span> Low</td>
-        <td class="col-b"><span class="partial">&#9679;</span> Medium</td>
-      </tr>
-      <tr>
-        <td>Interactivity</td>
-        <td class="col-a"><span class="cross">&#9679;</span> None (fire &amp; forget)</td>
-        <td class="col-b"><span class="check">&#9679;</span> Full REPL with live feedback</td>
-      </tr>
-      <tr>
-        <td>Scriptability</td>
-        <td class="col-a"><span class="check">&#9679;</span> Excellent (bash, CI/CD)</td>
-        <td class="col-b"><span class="partial">&#9679;</span> Moderate (pipe-based)</td>
-      </tr>
-      <tr>
-        <td>Live Feedback</td>
-        <td class="col-a"><span class="cross">&#9679;</span> No</td>
-        <td class="col-b"><span class="check">&#9679;</span> Yes (subscribes to status)</td>
-      </tr>
-      <tr>
-        <td>Maintenance Burden</td>
-        <td class="col-a"><span class="check">&#9679;</span> Low</td>
-        <td class="col-b"><span class="partial">&#9679;</span> Medium</td>
-      </tr>
-      <tr>
-        <td>Best For</td>
-        <td class="col-a">Automation, scripting, CI/CD</td>
-        <td class="col-b">Manual debugging, exploration</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- ===== Incremental Build Strategy ===== -->
-  <div class="incremental-section">
-    <h2>Recommended: Incremental Build Strategy</h2>
-
-    <div class="incremental-banner">
-      <h3>Option B builds on top of Option A &mdash; you don't have to choose one or the other</h3>
-      <p>The core send logic is identical between both options. The only difference is the entry point.
-         Build Option A first for immediate value, then extend to Option B later if interactive debugging proves valuable.
-         The shared core means upgrading from A to B costs only ~1&ndash;2 additional hours instead of 2&ndash;3 from scratch.</p>
-    </div>
-
-    <div class="timeline">
-      <div class="timeline-item phase-a">
-        <h4><span class="col-a">Phase 1:</span> Build Option A &mdash; One-Shot Tool</h4>
-        <div class="phase-time">~1 hour &bull; Immediately usable</div>
-        <ul>
-          <li>Create shared library: AOS node, MockControlTrigger builder, DDS publisher</li>
-          <li>Build <code style="color:var(--accent-a)">mock_ctl</code> binary with CLI flags</li>
-          <li>Test with <code>onboard_main</code> in mock control mode</li>
-          <li>Use in bash scripts and CI/CD pipelines</li>
-        </ul>
-      </div>
-
-      <div class="timeline-item phase-b">
-        <h4><span class="col-b">Phase 2 (optional):</span> Extend to Option B &mdash; REPL</h4>
-        <div class="phase-time">~1&ndash;2 additional hours &bull; Reuses Phase 1 core</div>
-        <ul>
-          <li>Add REPL loop: read command &rarr; parse &rarr; call shared send logic</li>
-          <li>Add DDS subscriber for <code>mock_control_status</code> on background thread</li>
-          <li>Add live status display formatting</li>
-          <li>Build <code style="color:var(--accent-b)">interactive_mock_ctl</code> binary</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="file-tree">
-      <h3>Code Structure (Shared Core)</h3>
-      <pre><span class="build-file">mock_control_cli/</span>
-  <span class="build-file">BUILD</span>                          <span class="note"># Bazel build targets</span>
-  <span class="shared">mock_control_sender.h</span>          <span class="note"># Core logic (shared by A and B)</span>
-  <span class="shared">mock_control_sender.cc</span>         <span class="note"># AOS node, message builder, publisher</span>
-  <span class="phase-a-file">mock_ctl_main.cc</span>               <span class="note"># Phase 1: one-shot entry point</span>
-  <span class="phase-b-file">interactive_mock_ctl_main.cc</span>   <span class="note"># Phase 2: REPL entry point (added later)</span></pre>
-    </div>
-  </div>
-
-  <!-- ===== Architecture Diagrams ===== -->
-  <div class="arch-section">
-    <h2>Architecture Overview</h2>
+  <!-- ===== 5. Architecture ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">5</span> Architecture</h2>
     <div class="arch-grid">
       <div class="arch-card">
-        <h3 class="col-a">Option A &mdash; Data Flow</h3>
+        <h3 style="color:var(--accent1);">Phase 1 &mdash; Data Flow</h3>
         <pre>
-  ┌──────────────────────┐
-  │   <span class="col-a">mock_ctl</span> binary     │
-  │  (flags: --mode,     │
-  │   --start, --stop)   │
-  └──────────┬───────────┘
-             │ publish
-             ▼
-  ┌──────────────────────┐
-  │  AOS/DDS Topic       │
-  │ mock_control_trigger │
-  └──────────┬───────────┘
-             │ subscribe
-             ▼
-  ┌──────────────────────┐
-  │  MockControl         │
-  │  Component           │
-  │  (running in         │
-  │   onboard_main)      │
-  └──────────────────────┘</pre>
+  ┌─────────────────────────┐
+  │   <span style="color:var(--accent1)">mock_ctl</span> binary        │
+  │  (flags: --action,      │
+  │   --mode, --throttle)   │
+  └────────────┬────────────┘
+               │ publish
+               ▼
+  ┌─────────────────────────┐
+  │     AOS/DDS Topic       │
+  │  mock_control_trigger   │
+  └────────────┬────────────┘
+               │ subscribe
+               ▼
+  ┌─────────────────────────┐
+  │   MockControl Component │
+  │   (in onboard_main)     │
+  └─────────────────────────┘</pre>
       </div>
       <div class="arch-card">
-        <h3 class="col-b">Option B &mdash; Data Flow</h3>
+        <h3 style="color:var(--accent2);">Phase 2 &mdash; Data Flow</h3>
         <pre>
-  ┌──────────────────────┐
-  │ <span class="col-b">interactive_mock_ctl</span> │
-  │  REPL Command Loop   │◄────┐
-  │  (mode, start, stop) │     │ display
-  └──────────┬───────────┘     │
-             │ publish         │
-             ▼                 │
-  ┌──────────────────────┐     │
-  │  AOS/DDS Topics      │     │
-  │  trigger ──►         │     │
-  │  ◄── status          ├─────┘
-  └──────────┬───────────┘ subscribe
-             │
-             ▼
-  ┌──────────────────────┐
-  │  MockControl         │
-  │  Component           │
-  │  (running in         │
-  │   onboard_main)      │
-  └──────────────────────┘</pre>
+  ┌─────────────────────────┐
+  │ <span style="color:var(--accent2)">interactive_mock_ctl</span>    │
+  │  REPL + Status Display  │◄───┐
+  │  (mode, start, stop)    │    │
+  └────────────┬────────────┘    │
+               │ publish         │ display
+               ▼                 │
+  ┌─────────────────────────┐    │
+  │     AOS/DDS Topics      │    │
+  │  trigger ──►            │    │
+  │  ◄── status             ├────┘
+  └────────────┬────────────┘ subscribe
+               │
+               ▼
+  ┌─────────────────────────┐
+  │   MockControl Component │
+  │   (in onboard_main)     │
+  └─────────────────────────┘</pre>
       </div>
     </div>
+  </section>
+
+  <!-- ===== 6. Quick Reference ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">6</span> Quick Reference</h2>
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th style="color:var(--accent1);">Phase 1 &mdash; One-Shot</th>
+          <th style="color:var(--accent2);">Phase 2 &mdash; REPL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Time to Build</td>
+          <td>~1 hour</td>
+          <td>+1&ndash;2 hours (incremental)</td>
+        </tr>
+        <tr>
+          <td>Code Size</td>
+          <td>~150&ndash;200 lines</td>
+          <td>~400&ndash;500 lines (total)</td>
+        </tr>
+        <tr>
+          <td>Interactivity</td>
+          <td>None (fire &amp; forget)</td>
+          <td>Full REPL + live feedback</td>
+        </tr>
+        <tr>
+          <td>Scriptability</td>
+          <td style="color:var(--green);">Excellent</td>
+          <td style="color:var(--yellow);">Moderate</td>
+        </tr>
+        <tr>
+          <td>Status Feedback</td>
+          <td style="color:var(--muted);">No</td>
+          <td style="color:var(--green);">Yes (DDS subscriber)</td>
+        </tr>
+        <tr>
+          <td>Dependencies</td>
+          <td>AOS, DDS, protobuf, gflags</td>
+          <td>+ readline (or similar)</td>
+        </tr>
+        <tr>
+          <td>Best For</td>
+          <td>Automation, CI, scripted tests</td>
+          <td>Manual debugging, exploration</td>
+        </tr>
+        <tr>
+          <td>Prerequisite</td>
+          <td>&mdash;</td>
+          <td>Phase 1 (shared core)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <div class="footer">
+    Tranxmart Mock Control CLI &mdash; Implementation Roadmap &mdash; February 2026
   </div>
 
-  <div class="footer">
-    Generated for Tranxmart Mock Control CLI design review &mdash; February 2026
-  </div>
 </div>
 </body>
 </html>
