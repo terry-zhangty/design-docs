@@ -362,9 +362,20 @@
     </div>
   </section>
 
-  <!-- ===== 2. Code Structure ===== -->
+  <!-- ===== 2. Architecture ===== -->
   <section>
-    <h2 class="section-title"><span class="num">2</span> Code Structure</h2>
+    <h2 class="section-title"><span class="num">2</span> Architecture</h2>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1rem;">
+      Side-by-side view of Phase 1 (simple publish) and Phase 2 (publish + subscribe with live feedback).
+      The green dashed box is the shared core reused by both phases.
+    </p>
+    <div class="mxgraph" style="max-width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0f172a;" data-mxgraph="{&quot;highlight&quot;:&quot;#38bdf8&quot;,&quot;nav&quot;:false,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxGraphModel&gt;&lt;root&gt;&lt;mxCell id=\&quot;0\&quot;/&gt;&lt;mxCell id=\&quot;1\&quot; parent=\&quot;0\&quot;/&gt;&lt;mxCell id=\&quot;p1_title\&quot; value=\&quot;&amp;lt;b&amp;gt;Phase 1: One-Shot CLI&amp;lt;/b&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontColor=#38bdf8;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;40\&quot; y=\&quot;20\&quot; width=\&quot;300\&quot; height=\&quot;30\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p1_cli\&quot; value=\&quot;&amp;lt;b&amp;gt;mock_ctl&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;CLI flags: --action, --mode&amp;lt;br&amp;gt;--throttle, --brake, --steer&amp;lt;/font&amp;gt;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#38bdf8;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;80\&quot; y=\&quot;70\&quot; width=\&quot;220\&quot; height=\&quot;70\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p1_core\&quot; value=\&quot;&amp;lt;b&amp;gt;MockControlSender&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Shared core library&amp;lt;br&amp;gt;(AOS node + DDS publisher)&amp;lt;/font&amp;gt;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#4ade80;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;dashed=1;dashPattern=8 4;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;80\&quot; y=\&quot;175\&quot; width=\&quot;220\&quot; height=\&quot;60\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p1_topic\&quot; value=\&quot;&amp;lt;b&amp;gt;mock_control_trigger&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;AOS/DDS Topic&amp;lt;/font&amp;gt;\&quot; style=\&quot;shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#334155;strokeWidth=1;fontColor=#e2e8f0;size=15;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;80\&quot; y=\&quot;275\&quot; width=\&quot;220\&quot; height=\&quot;55\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p1_comp\&quot; value=\&quot;&amp;lt;b&amp;gt;MockControl Component&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Running in onboard_main&amp;lt;/font&amp;gt;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#fbbf24;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;80\&quot; y=\&quot;370\&quot; width=\&quot;220\&quot; height=\&quot;55\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p1_1\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;calls&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#38bdf8;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p1_cli\&quot; target=\&quot;p1_core\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p1_2\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;publish&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4ade80;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p1_core\&quot; target=\&quot;p1_topic\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p1_3\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;subscribe&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p1_topic\&quot; target=\&quot;p1_comp\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;sep\&quot; value=\&quot;\&quot; style=\&quot;line;strokeColor=#334155;strokeWidth=1;fillColor=none;dashed=1;dashPattern=8 4;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;380\&quot; y=\&quot;30\&quot; width=\&quot;1\&quot; height=\&quot;410\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p2_title\&quot; value=\&quot;&amp;lt;b&amp;gt;Phase 2: Interactive REPL&amp;lt;/b&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontColor=#a78bfa;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;420\&quot; y=\&quot;20\&quot; width=\&quot;330\&quot; height=\&quot;30\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p2_cli\&quot; value=\&quot;&amp;lt;b&amp;gt;interactive_mock_ctl&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;REPL: mode, start, stop, status&amp;lt;br&amp;gt;Live status display&amp;lt;/font&amp;gt;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#a78bfa;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;450\&quot; y=\&quot;70\&quot; width=\&quot;250\&quot; height=\&quot;70\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p2_core\&quot; value=\&quot;&amp;lt;b&amp;gt;MockControlSender&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Same shared core library&amp;lt;br&amp;gt;(reused from Phase 1)&amp;lt;/font&amp;gt;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#4ade80;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;dashed=1;dashPattern=8 4;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;450\&quot; y=\&quot;175\&quot; width=\&quot;250\&quot; height=\&quot;60\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p2_trigger\&quot; value=\&quot;&amp;lt;b&amp;gt;mock_control_trigger&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;AOS/DDS Topic (publish)&amp;lt;/font&amp;gt;\&quot; style=\&quot;shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#334155;strokeWidth=1;fontColor=#e2e8f0;size=15;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;420\&quot; y=\&quot;275\&quot; width=\&quot;180\&quot; height=\&quot;55\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p2_status\&quot; value=\&quot;&amp;lt;b&amp;gt;mock_control_status&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;AOS/DDS Topic (subscribe)&amp;lt;/font&amp;gt;\&quot; style=\&quot;shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#a78bfa;strokeWidth=1;fontColor=#e2e8f0;size=15;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;620\&quot; y=\&quot;275\&quot; width=\&quot;180\&quot; height=\&quot;55\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;p2_comp\&quot; value=\&quot;&amp;lt;b&amp;gt;MockControl Component&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Running in onboard_main&amp;lt;/font&amp;gt;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#fbbf24;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;480\&quot; y=\&quot;370\&quot; width=\&quot;220\&quot; height=\&quot;55\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p2_1\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;calls&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#a78bfa;strokeWidth=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p2_cli\&quot; target=\&quot;p2_core\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p2_2\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;publish&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4ade80;strokeWidth=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p2_core\&quot; target=\&quot;p2_trigger\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p2_3\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;subscribe&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p2_trigger\&quot; target=\&quot;p2_comp\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p2_4\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;publishes status&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;endArrow=classic;endFill=1;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p2_comp\&quot; target=\&quot;p2_status\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;e_p2_5\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;display&amp;lt;/font&amp;gt;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#a78bfa;strokeWidth=1;exitX=0.5;exitY=0;entryX=1;entryY=0.5;endArrow=classic;endFill=1;dashed=1;dashPattern=8 4;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;p2_status\&quot; target=\&quot;p2_cli\&quot;&gt;&lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg_title\&quot; value=\&quot;&amp;lt;b style=&amp;quot;font-size:11px;&amp;quot;&amp;gt;Legend&amp;lt;/b&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#94a3b8;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;40\&quot; y=\&quot;450\&quot; width=\&quot;50\&quot; height=\&quot;20\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg1\&quot; value=\&quot;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#38bdf8;strokeWidth=2;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;40\&quot; y=\&quot;475\&quot; width=\&quot;20\&quot; height=\&quot;14\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg1_t\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Phase 1 component&amp;lt;/font&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;68\&quot; y=\&quot;472\&quot; width=\&quot;120\&quot; height=\&quot;20\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg2\&quot; value=\&quot;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#a78bfa;strokeWidth=2;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;200\&quot; y=\&quot;475\&quot; width=\&quot;20\&quot; height=\&quot;14\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg2_t\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Phase 2 component&amp;lt;/font&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;228\&quot; y=\&quot;472\&quot; width=\&quot;120\&quot; height=\&quot;20\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg3\&quot; value=\&quot;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#4ade80;strokeWidth=2;dashed=1;dashPattern=8 4;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;360\&quot; y=\&quot;475\&quot; width=\&quot;20\&quot; height=\&quot;14\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg3_t\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;Shared core (reused)&amp;lt;/font&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;388\&quot; y=\&quot;472\&quot; width=\&quot;130\&quot; height=\&quot;20\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg4\&quot; value=\&quot;\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#fbbf24;strokeWidth=2;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;530\&quot; y=\&quot;475\&quot; width=\&quot;20\&quot; height=\&quot;14\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=\&quot;leg4_t\&quot; value=\&quot;&amp;lt;font style=&amp;quot;font-size:10px;color:#94a3b8&amp;quot;&amp;gt;onboard_main component&amp;lt;/font&amp;gt;\&quot; style=\&quot;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;&lt;mxGeometry x=\&quot;558\&quot; y=\&quot;472\&quot; width=\&quot;150\&quot; height=\&quot;20\&quot; as=\&quot;geometry\&quot;/&gt;&lt;/mxCell&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;&quot;}"></div>
+    <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
+  </section>
+
+  <!-- ===== 3. Code Structure ===== -->
+  <section>
+    <h2 class="section-title"><span class="num">3</span> Code Structure</h2>
     <pre><span class="build-f">txm/module/canbus/tool/mock_control_cli/</span>
   <span class="build-f">BUILD</span>                             <span class="note"># Bazel build targets</span>
   <span class="shared">mock_control_sender.h</span>             <span class="note"># Shared core: message builder + publisher</span>
@@ -381,7 +392,7 @@
 
   <!-- ===== 3. Roadmap ===== -->
   <section>
-    <h2 class="section-title"><span class="num">3</span> Implementation Roadmap</h2>
+    <h2 class="section-title"><span class="num">4</span> Implementation Roadmap</h2>
 
     <div class="roadmap">
       <!-- Phase 1 -->
@@ -453,7 +464,7 @@
 
   <!-- ===== 4. Usage Examples ===== -->
   <section>
-    <h2 class="section-title"><span class="num">4</span> Usage Examples</h2>
+    <h2 class="section-title"><span class="num">5</span> Usage Examples</h2>
     <div class="usage-grid">
       <div class="usage-card">
         <h3><span class="label-1">Phase 1:</span> One-Shot Commands</h3>
@@ -503,56 +514,6 @@ sleep 5 && \
   <span class="status">[OK] All signals stopped.</span>
 
 <span class="prompt">&gt;</span> quit</pre>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 5. Architecture ===== -->
-  <section>
-    <h2 class="section-title"><span class="num">5</span> Architecture</h2>
-    <div class="arch-grid">
-      <div class="arch-card">
-        <h3 style="color:var(--accent1);">Phase 1 &mdash; Data Flow</h3>
-        <pre>
-  ┌─────────────────────────┐
-  │   <span style="color:var(--accent1)">mock_ctl</span> binary        │
-  │  (flags: --action,      │
-  │   --mode, --throttle)   │
-  └────────────┬────────────┘
-               │ publish
-               ▼
-  ┌─────────────────────────┐
-  │     AOS/DDS Topic       │
-  │  mock_control_trigger   │
-  └────────────┬────────────┘
-               │ subscribe
-               ▼
-  ┌─────────────────────────┐
-  │   MockControl Component │
-  │   (in onboard_main)     │
-  └─────────────────────────┘</pre>
-      </div>
-      <div class="arch-card">
-        <h3 style="color:var(--accent2);">Phase 2 &mdash; Data Flow</h3>
-        <pre>
-  ┌─────────────────────────┐
-  │ <span style="color:var(--accent2)">interactive_mock_ctl</span>    │
-  │  REPL + Status Display  │◄───┐
-  │  (mode, start, stop)    │    │
-  └────────────┬────────────┘    │
-               │ publish         │ display
-               ▼                 │
-  ┌─────────────────────────┐    │
-  │     AOS/DDS Topics      │    │
-  │  trigger ──►            │    │
-  │  ◄── status             ├────┘
-  └────────────┬────────────┘ subscribe
-               │
-               ▼
-  ┌─────────────────────────┐
-  │   MockControl Component │
-  │   (in onboard_main)     │
-  └─────────────────────────┘</pre>
       </div>
     </div>
   </section>
