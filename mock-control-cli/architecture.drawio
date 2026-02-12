@@ -4,118 +4,138 @@
     <mxCell id="1" parent="0"/>
 
     <!-- Phase 1 Title -->
-    <mxCell id="p1_title" value="&lt;b&gt;Phase 1: One-Shot CLI&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontColor=#38bdf8;" vertex="1" parent="1">
-      <mxGeometry x="40" y="20" width="300" height="30" as="geometry"/>
+    <mxCell id="p1t" value="&lt;b style=&quot;font-size:16px&quot;&gt;Phase 1: One-Shot CLI&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontColor=#38bdf8;" vertex="1" parent="1">
+      <mxGeometry x="40" y="10" width="340" height="35" as="geometry"/>
     </mxCell>
 
     <!-- mock_ctl binary -->
-    <mxCell id="p1_cli" value="&lt;b&gt;mock_ctl&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;CLI flags: --action, --mode&lt;br&gt;--throttle, --brake, --steer&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#38bdf8;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;" vertex="1" parent="1">
-      <mxGeometry x="80" y="70" width="220" height="70" as="geometry"/>
+    <mxCell id="p1c" value="&lt;b style=&quot;font-size:14px&quot;&gt;mock_ctl&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#94a3b8&quot;&gt;CLI flags: --action, --mode&lt;br&gt;--throttle, --brake, --steer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#38bdf8;strokeWidth=2;fontColor=#e2e8f0;arcSize=10;" vertex="1" parent="1">
+      <mxGeometry x="60" y="60" width="280" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- Arrow: calls -->
+    <mxCell id="e1a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#64748b;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1c" target="p1s">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1a_l" value="&lt;span style=&quot;font-size:12px;color:#94a3b8;background:#0f172a;padding:2px 6px&quot;&gt;calls&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e1a">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
     </mxCell>
 
     <!-- Shared Core -->
-    <mxCell id="p1_core" value="&lt;b&gt;MockControlSender&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Shared core library&lt;br&gt;(AOS node + DDS publisher)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#4ade80;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
-      <mxGeometry x="80" y="175" width="220" height="60" as="geometry"/>
+    <mxCell id="p1s" value="&lt;b style=&quot;font-size:13px&quot;&gt;MockControlSender&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#94a3b8&quot;&gt;Shared core library&lt;br&gt;AOS node + DDS publisher&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#4ade80;strokeWidth=2;fontColor=#e2e8f0;arcSize=10;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+      <mxGeometry x="60" y="190" width="280" height="70" as="geometry"/>
     </mxCell>
 
-    <!-- AOS/DDS Topic -->
-    <mxCell id="p1_topic" value="&lt;b&gt;mock_control_trigger&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;AOS/DDS Topic&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#334155;strokeWidth=1;fontColor=#e2e8f0;size=15;" vertex="1" parent="1">
-      <mxGeometry x="80" y="275" width="220" height="55" as="geometry"/>
+    <!-- Arrow: publish -->
+    <mxCell id="e1b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4ade80;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1s" target="p1tp">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1b_l" value="&lt;span style=&quot;font-size:12px;color:#4ade80;background:#0f172a;padding:2px 6px&quot;&gt;publish&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e1b">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- Topic: mock_control_trigger -->
+    <mxCell id="p1tp" value="&lt;b style=&quot;font-size:13px&quot;&gt;mock_control_trigger&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#94a3b8&quot;&gt;AOS / DDS Topic&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#475569;strokeWidth=1;fontColor=#e2e8f0;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="75" y="310" width="250" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Arrow: subscribe -->
+    <mxCell id="e1c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1tp" target="p1mc">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1c_l" value="&lt;span style=&quot;font-size:12px;color:#fbbf24;background:#0f172a;padding:2px 6px&quot;&gt;subscribe&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e1c">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
     </mxCell>
 
     <!-- MockControl Component -->
-    <mxCell id="p1_comp" value="&lt;b&gt;MockControl Component&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Running in onboard_main&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#fbbf24;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;" vertex="1" parent="1">
-      <mxGeometry x="80" y="370" width="220" height="55" as="geometry"/>
+    <mxCell id="p1mc" value="&lt;b style=&quot;font-size:13px&quot;&gt;MockControl Component&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#94a3b8&quot;&gt;Running in onboard_main&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#fbbf24;strokeWidth=2;fontColor=#e2e8f0;arcSize=10;" vertex="1" parent="1">
+      <mxGeometry x="65" y="420" width="270" height="60" as="geometry"/>
     </mxCell>
 
-    <!-- Phase 1 Edges -->
-    <mxCell id="e_p1_1" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;calls&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#38bdf8;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1_cli" target="p1_core">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="e_p1_2" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;publish&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4ade80;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1_core" target="p1_topic">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="e_p1_3" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;subscribe&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1_topic" target="p1_comp">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-
-    <!-- Separator -->
+    <!-- ========== Separator ========== -->
     <mxCell id="sep" value="" style="line;strokeColor=#334155;strokeWidth=1;fillColor=none;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
-      <mxGeometry x="380" y="30" width="1" height="410" as="geometry"/>
+      <mxGeometry x="420" y="20" width="1" height="480" as="geometry"/>
     </mxCell>
 
-    <!-- Phase 2 Title -->
-    <mxCell id="p2_title" value="&lt;b&gt;Phase 2: Interactive REPL&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontColor=#a78bfa;" vertex="1" parent="1">
-      <mxGeometry x="420" y="20" width="330" height="30" as="geometry"/>
+    <!-- ========== Phase 2 ========== -->
+    <mxCell id="p2t" value="&lt;b style=&quot;font-size:16px&quot;&gt;Phase 2: Interactive REPL&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontColor=#a78bfa;" vertex="1" parent="1">
+      <mxGeometry x="460" y="10" width="380" height="35" as="geometry"/>
     </mxCell>
 
-    <!-- interactive_mock_ctl binary -->
-    <mxCell id="p2_cli" value="&lt;b&gt;interactive_mock_ctl&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;REPL: mode, start, stop, status&lt;br&gt;Live status display&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#a78bfa;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;" vertex="1" parent="1">
-      <mxGeometry x="450" y="70" width="250" height="70" as="geometry"/>
+    <!-- interactive_mock_ctl -->
+    <mxCell id="p2c" value="&lt;b style=&quot;font-size:14px&quot;&gt;interactive_mock_ctl&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:12px;color:#94a3b8&quot;&gt;REPL: mode, start, stop, status&lt;br&gt;Live status display&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#a78bfa;strokeWidth=2;fontColor=#e2e8f0;arcSize=10;" vertex="1" parent="1">
+      <mxGeometry x="480" y="60" width="300" height="80" as="geometry"/>
     </mxCell>
 
-    <!-- Shared Core (Phase 2) -->
-    <mxCell id="p2_core" value="&lt;b&gt;MockControlSender&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Same shared core library&lt;br&gt;(reused from Phase 1)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#4ade80;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
-      <mxGeometry x="450" y="175" width="250" height="60" as="geometry"/>
+    <!-- Arrow: calls -->
+    <mxCell id="e2a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#64748b;strokeWidth=2;exitX=0.35;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2c" target="p2s">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2a_l" value="&lt;span style=&quot;font-size:12px;color:#94a3b8;background:#0f172a;padding:2px 6px&quot;&gt;calls&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e2a">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
     </mxCell>
 
-    <!-- DDS Topics (Phase 2) -->
-    <mxCell id="p2_trigger" value="&lt;b&gt;mock_control_trigger&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;AOS/DDS Topic (publish)&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#334155;strokeWidth=1;fontColor=#e2e8f0;size=15;" vertex="1" parent="1">
-      <mxGeometry x="420" y="275" width="180" height="55" as="geometry"/>
+    <!-- Shared Core (reused) -->
+    <mxCell id="p2s" value="&lt;b style=&quot;font-size:13px&quot;&gt;MockControlSender&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#94a3b8&quot;&gt;Same shared core&lt;br&gt;(reused from Phase 1)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#4ade80;strokeWidth=2;fontColor=#e2e8f0;arcSize=10;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+      <mxGeometry x="480" y="190" width="300" height="70" as="geometry"/>
     </mxCell>
-    <mxCell id="p2_status" value="&lt;b&gt;mock_control_status&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;AOS/DDS Topic (subscribe)&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#a78bfa;strokeWidth=1;fontColor=#e2e8f0;size=15;" vertex="1" parent="1">
-      <mxGeometry x="620" y="275" width="180" height="55" as="geometry"/>
+
+    <!-- Arrow: publish -->
+    <mxCell id="e2b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4ade80;strokeWidth=2;exitX=0.3;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2s" target="p2tr">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2b_l" value="&lt;span style=&quot;font-size:12px;color:#4ade80;background:#0f172a;padding:2px 6px&quot;&gt;publish&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e2b">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- Topic: trigger -->
+    <mxCell id="p2tr" value="&lt;b style=&quot;font-size:12px&quot;&gt;mock_control_trigger&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Topic (publish)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#475569;strokeWidth=1;fontColor=#e2e8f0;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="460" y="315" width="190" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Topic: status -->
+    <mxCell id="p2st" value="&lt;b style=&quot;font-size:12px&quot;&gt;mock_control_status&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Topic (subscribe)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#162032;strokeColor=#a78bfa;strokeWidth=1;fontColor=#e2e8f0;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="680" y="315" width="190" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Arrow: subscribe to trigger -->
+    <mxCell id="e2c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.35;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2tr" target="p2mc">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2c_l" value="&lt;span style=&quot;font-size:12px;color:#fbbf24;background:#0f172a;padding:2px 6px&quot;&gt;subscribe&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e2c">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
     </mxCell>
 
     <!-- MockControl Component (Phase 2) -->
-    <mxCell id="p2_comp" value="&lt;b&gt;MockControl Component&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Running in onboard_main&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#fbbf24;strokeWidth=2;fontColor=#e2e8f0;arcSize=12;" vertex="1" parent="1">
-      <mxGeometry x="480" y="370" width="220" height="55" as="geometry"/>
+    <mxCell id="p2mc" value="&lt;b style=&quot;font-size:13px&quot;&gt;MockControl Component&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#94a3b8&quot;&gt;Running in onboard_main&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#fbbf24;strokeWidth=2;fontColor=#e2e8f0;arcSize=10;" vertex="1" parent="1">
+      <mxGeometry x="510" y="420" width="270" height="60" as="geometry"/>
     </mxCell>
 
-    <!-- Phase 2 Edges -->
-    <mxCell id="e_p2_1" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;calls&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#a78bfa;strokeWidth=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2_cli" target="p2_core">
+    <!-- Arrow: publishes status -->
+    <mxCell id="e2d" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=2;exitX=0.8;exitY=0;entryX=0.5;entryY=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2mc" target="p2st">
       <mxGeometry relative="1" as="geometry"/>
     </mxCell>
-    <mxCell id="e_p2_2" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;publish&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4ade80;strokeWidth=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2_core" target="p2_trigger">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="e_p2_3" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;subscribe&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2_trigger" target="p2_comp">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="e_p2_4" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;publishes status&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#fbbf24;strokeWidth=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2_comp" target="p2_status">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="e_p2_5" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;display&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#a78bfa;strokeWidth=1;exitX=0.5;exitY=0;entryX=1;entryY=0.5;endArrow=classic;endFill=1;dashed=1;dashPattern=8 4;" edge="1" parent="1" source="p2_status" target="p2_cli">
-      <mxGeometry relative="1" as="geometry"/>
+    <mxCell id="e2d_l" value="&lt;span style=&quot;font-size:11px;color:#fbbf24;background:#0f172a;padding:2px 4px&quot;&gt;publishes&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e2d">
+      <mxGeometry x="0.2" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
     </mxCell>
 
-    <!-- Legend -->
-    <mxCell id="leg_title" value="&lt;b style=&quot;font-size:11px;&quot;&gt;Legend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#94a3b8;" vertex="1" parent="1">
-      <mxGeometry x="40" y="450" width="50" height="20" as="geometry"/>
+    <!-- Arrow: display (status -> CLI) -->
+    <mxCell id="e2e" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#a78bfa;strokeWidth=2;exitX=0.5;exitY=0;entryX=1;entryY=0.6;endArrow=classic;endFill=1;dashed=1;dashPattern=8 4;" edge="1" parent="1" source="p2st" target="p2c">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="775" y="290"/>
+          <mxPoint x="860" y="290"/>
+          <mxPoint x="860" y="108"/>
+        </Array>
+      </mxGeometry>
     </mxCell>
-    <mxCell id="leg1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#38bdf8;strokeWidth=2;" vertex="1" parent="1">
-      <mxGeometry x="40" y="475" width="20" height="14" as="geometry"/>
+    <mxCell id="e2e_l" value="&lt;span style=&quot;font-size:12px;color:#a78bfa;background:#0f172a;padding:2px 6px&quot;&gt;display&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e2e">
+      <mxGeometry x="-0.3" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
     </mxCell>
-    <mxCell id="leg1_t" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Phase 1 component&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="68" y="472" width="120" height="20" as="geometry"/>
-    </mxCell>
-    <mxCell id="leg2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#a78bfa;strokeWidth=2;" vertex="1" parent="1">
-      <mxGeometry x="200" y="475" width="20" height="14" as="geometry"/>
-    </mxCell>
-    <mxCell id="leg2_t" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Phase 2 component&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="228" y="472" width="120" height="20" as="geometry"/>
-    </mxCell>
-    <mxCell id="leg3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#4ade80;strokeWidth=2;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
-      <mxGeometry x="360" y="475" width="20" height="14" as="geometry"/>
-    </mxCell>
-    <mxCell id="leg3_t" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;Shared core (reused)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="388" y="472" width="130" height="20" as="geometry"/>
-    </mxCell>
-    <mxCell id="leg4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#fbbf24;strokeWidth=2;" vertex="1" parent="1">
-      <mxGeometry x="530" y="475" width="20" height="14" as="geometry"/>
-    </mxCell>
-    <mxCell id="leg4_t" value="&lt;font style=&quot;font-size:10px;color:#94a3b8&quot;&gt;onboard_main component&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1">
-      <mxGeometry x="558" y="472" width="150" height="20" as="geometry"/>
+
+    <!-- ========== Legend ========== -->
+    <mxCell id="lg" value="&lt;span style=&quot;font-size:12px;color:#94a3b8&quot;&gt;&lt;b&gt;Legend:&lt;/b&gt;  &lt;span style=&quot;color:#38bdf8&quot;&gt;Blue&lt;/span&gt; = Phase 1  |  &lt;span style=&quot;color:#a78bfa&quot;&gt;Purple&lt;/span&gt; = Phase 2  |  &lt;span style=&quot;color:#4ade80&quot;&gt;Green dashed&lt;/span&gt; = Shared core  |  &lt;span style=&quot;color:#fbbf24&quot;&gt;Yellow&lt;/span&gt; = onboard_main&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="140" y="510" width="620" height="25" as="geometry"/>
     </mxCell>
   </root>
 </mxGraphModel>
