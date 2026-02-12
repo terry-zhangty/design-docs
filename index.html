@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tranxmart Design Docs</title>
+<style>
+  :root { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .subtitle { color: var(--muted); margin-bottom: 2rem; }
+  .doc-list { list-style: none; }
+  .doc-list li { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.75rem; }
+  .doc-list a { display: block; padding: 1rem 1.25rem; color: var(--accent); text-decoration: none; font-weight: 500; }
+  .doc-list a:hover { background: rgba(56,189,248,0.05); }
+  .doc-list .desc { color: var(--muted); font-size: 0.85rem; font-weight: 400; display: block; margin-top: 0.25rem; }
+  .footer { color: var(--muted); font-size: 0.8rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Tranxmart Design Docs</h1>
+  <p class="subtitle">Technical design documents and comparisons</p>
+  <ul class="doc-list">
+    <li>
+      <a href="mock-control-cli/">
+        Mock Control CLI Tool &mdash; Option Comparison
+        <span class="desc">Comparison of two approaches for building a CLI sender tool for MockControlTrigger commands (Feb 2026)</span>
+      </a>
+    </li>
+  </ul>
+  <p class="footer">Generated for Tranxmart engineering team</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Control CLI - Option Comparison</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent-a: #38bdf8;
+    --accent-b: #a78bfa;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  /* Cards side by side */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .card.recommended {
+    border-color: var(--accent-a);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+  }
+  .badge {
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    background: var(--accent-a);
+    color: var(--bg);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .card h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.25rem;
+  }
+  .card h2 .label-a { color: var(--accent-a); }
+  .card h2 .label-b { color: var(--accent-b); }
+  .card .tagline {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: var(--muted); }
+  .metric-value { font-weight: 600; }
+
+  /* Pro/Con lists */
+  .pro-con { margin-top: 1rem; }
+  .pro-con h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    color: var(--muted);
+  }
+  .pro-con ul {
+    list-style: none;
+    padding: 0;
+  }
+  .pro-con li {
+    padding: 0.3rem 0;
+    font-size: 0.88rem;
+    padding-left: 1.4rem;
+    position: relative;
+  }
+  .pro-con li::before {
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+  .pros li::before { content: "+"; color: var(--green); }
+  .cons li::before { content: "-"; color: var(--red); }
+
+  /* Code blocks */
+  .code-section {
+    margin-top: 1rem;
+  }
+  .code-section h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    color: var(--muted);
+  }
+  pre {
+    background: #0c1222;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #c9d1d9;
+  }
+  pre .comment { color: #6a737d; }
+  pre .cmd { color: var(--green); }
+  pre .flag { color: var(--yellow); }
+  pre .prompt { color: var(--accent-a); }
+  pre .status { color: var(--muted); font-style: italic; }
+
+  /* Comparison table */
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .comparison-table th {
+    background: #162032;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+  }
+  .comparison-table td:first-child {
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .col-a { color: var(--accent-a); }
+  .col-b { color: var(--accent-b); }
+  .check { color: var(--green); }
+  .cross { color: var(--red); }
+  .partial { color: var(--yellow); }
+
+  /* Architecture diagram (ASCII art) */
+  .arch-section {
+    margin-bottom: 2rem;
+  }
+  .arch-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .arch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .arch-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  .arch-card pre {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .cards, .arch-grid { grid-template-columns: 1fr; }
+    body { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Mock Control CLI Tool &mdash; Option Comparison</h1>
+  <p class="subtitle">Two approaches for sending MockControlTrigger commands without the APOV UI</p>
+
+  <!-- ===== Side-by-Side Cards ===== -->
+  <div class="cards">
+
+    <!-- Option A -->
+    <div class="card recommended">
+      <div class="badge">Recommended</div>
+      <h2><span class="label-a">Option A</span> &mdash; One-Shot Tool</h2>
+      <p class="tagline">Run once, send one command, exit. Chain in scripts.</p>
+
+      <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">~1 hour</span></div>
+      <div class="metric-row"><span class="metric-label">Code Size</span><span class="metric-value">~150&ndash;200 lines</span></div>
+      <div class="metric-row"><span class="metric-label">Complexity</span><span class="metric-value">Low</span></div>
+      <div class="metric-row"><span class="metric-label">Interactivity</span><span class="metric-value">None</span></div>
+      <div class="metric-row"><span class="metric-label">Scriptability</span><span class="metric-value">Excellent</span></div>
+      <div class="metric-row"><span class="metric-label">Live Feedback</span><span class="metric-value">No</span></div>
+
+      <div class="pro-con">
+        <h3>Pros</h3>
+        <ul class="pros">
+          <li>Fast to implement</li>
+          <li>Highly scriptable &amp; composable</li>
+          <li>Simple codebase, easy to maintain</li>
+          <li>Follows existing codebase patterns</li>
+          <li>Great for CI/CD pipelines</li>
+        </ul>
+        <h3>Cons</h3>
+        <ul class="cons">
+          <li>No real-time status feedback</li>
+          <li>DDS startup overhead per invocation</li>
+          <li>Multiple runs needed for sequences</li>
+        </ul>
+      </div>
+
+      <div class="code-section">
+        <h3>Usage Example</h3>
+        <pre><span class="comment"># Switch driving mode to auto</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--mode=auto</span>
+
+<span class="comment"># Start throttle signal at 50% with step profile</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--start --throttle=0.5 --profile=step</span>
+
+<span class="comment"># Stop all signals</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--stop</span>
+
+<span class="comment"># Scripted sequence</span>
+<span class="cmd">mock_ctl</span> <span class="flag">--mode=auto</span> && sleep 2 && \
+<span class="cmd">mock_ctl</span> <span class="flag">--start --throttle=0.5</span></pre>
+      </div>
+    </div>
+
+    <!-- Option B -->
+    <div class="card">
+      <h2><span class="label-b">Option B</span> &mdash; Interactive REPL</h2>
+      <p class="tagline">Persistent process with live status and command loop.</p>
+
+      <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">~2&ndash;3 hours</span></div>
+      <div class="metric-row"><span class="metric-label">Code Size</span><span class="metric-value">~400&ndash;500 lines</span></div>
+      <div class="metric-row"><span class="metric-label">Complexity</span><span class="metric-value">Medium</span></div>
+      <div class="metric-row"><span class="metric-label">Interactivity</span><span class="metric-value">Full REPL</span></div>
+      <div class="metric-row"><span class="metric-label">Scriptability</span><span class="metric-value">Moderate</span></div>
+      <div class="metric-row"><span class="metric-label">Live Feedback</span><span class="metric-value">Yes</span></div>
+
+      <div class="pro-con">
+        <h3>Pros</h3>
+        <ul class="pros">
+          <li>Interactive and intuitive UX</li>
+          <li>Real-time actuator status display</li>
+          <li>Excellent debugging experience</li>
+          <li>Single persistent process</li>
+          <li>Tab completion potential</li>
+        </ul>
+        <h3>Cons</h3>
+        <ul class="cons">
+          <li>More complex implementation</li>
+          <li>Harder to script (pipe commands)</li>
+          <li>Command parser adds surface area</li>
+          <li>More code to maintain</li>
+        </ul>
+      </div>
+
+      <div class="code-section">
+        <h3>Usage Example</h3>
+        <pre><span class="cmd">$ mock_ctl_interactive</span>
+<span class="status">Mock Control CLI v1.0</span>
+<span class="status">Connected to mock_control_trigger topic.</span>
+<span class="status">Listening on mock_control_status...</span>
+
+<span class="prompt">&gt;</span> mode auto
+  <span class="status">[OK] Switching to AUTO_MODE...</span>
+  <span class="status">Status: driving_mode=AUTO_MODE</span>
+
+<span class="prompt">&gt;</span> start throttle 0.5 step
+  <span class="status">[OK] Throttle: target=0.50, profile=STEP</span>
+  <span class="status">Status: throttle=0.50 [ACTIVE]</span>
+
+<span class="prompt">&gt;</span> status
+  <span class="status">Throttle: 0.50 [ACTIVE]</span>
+  <span class="status">Brake: 0.00 [IDLE]</span>
+  <span class="status">Steer: 0.00 [IDLE]</span>
+
+<span class="prompt">&gt;</span> stop
+  <span class="status">[OK] All signals stopped.</span>
+
+<span class="prompt">&gt;</span> quit</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Comparison Table ===== -->
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Aspect</th>
+        <th class="col-a">Option A &mdash; One-Shot</th>
+        <th class="col-b">Option B &mdash; REPL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Build Time</td>
+        <td class="col-a">~1 hour</td>
+        <td class="col-b">~2&ndash;3 hours</td>
+      </tr>
+      <tr>
+        <td>Code Size</td>
+        <td class="col-a">~150&ndash;200 lines</td>
+        <td class="col-b">~400&ndash;500 lines</td>
+      </tr>
+      <tr>
+        <td>Complexity</td>
+        <td class="col-a"><span class="check">&#9679;</span> Low</td>
+        <td class="col-b"><span class="partial">&#9679;</span> Medium</td>
+      </tr>
+      <tr>
+        <td>Interactivity</td>
+        <td class="col-a"><span class="cross">&#9679;</span> None (fire &amp; forget)</td>
+        <td class="col-b"><span class="check">&#9679;</span> Full REPL with live feedback</td>
+      </tr>
+      <tr>
+        <td>Scriptability</td>
+        <td class="col-a"><span class="check">&#9679;</span> Excellent (bash, CI/CD)</td>
+        <td class="col-b"><span class="partial">&#9679;</span> Moderate (pipe-based)</td>
+      </tr>
+      <tr>
+        <td>Live Feedback</td>
+        <td class="col-a"><span class="cross">&#9679;</span> No</td>
+        <td class="col-b"><span class="check">&#9679;</span> Yes (subscribes to status)</td>
+      </tr>
+      <tr>
+        <td>Maintenance Burden</td>
+        <td class="col-a"><span class="check">&#9679;</span> Low</td>
+        <td class="col-b"><span class="partial">&#9679;</span> Medium</td>
+      </tr>
+      <tr>
+        <td>Best For</td>
+        <td class="col-a">Automation, scripting, CI/CD</td>
+        <td class="col-b">Manual debugging, exploration</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== Architecture Diagrams ===== -->
+  <div class="arch-section">
+    <h2>Architecture Overview</h2>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <h3 class="col-a">Option A &mdash; Data Flow</h3>
+        <pre>
+  ┌──────────────────────┐
+  │   <span class="col-a">mock_ctl</span> binary     │
+  │  (flags: --mode,     │
+  │   --start, --stop)   │
+  └──────────┬───────────┘
+             │ publish
+             ▼
+  ┌──────────────────────┐
+  │  AOS/DDS Topic       │
+  │ mock_control_trigger │
+  └──────────┬───────────┘
+             │ subscribe
+             ▼
+  ┌──────────────────────┐
+  │  MockControl         │
+  │  Component           │
+  │  (running in         │
+  │   onboard_main)      │
+  └──────────────────────┘</pre>
+      </div>
+      <div class="arch-card">
+        <h3 class="col-b">Option B &mdash; Data Flow</h3>
+        <pre>
+  ┌──────────────────────┐
+  │ <span class="col-b">interactive_mock_ctl</span> │
+  │  REPL Command Loop   │◄────┐
+  │  (mode, start, stop) │     │ display
+  └──────────┬───────────┘     │
+             │ publish         │
+             ▼                 │
+  ┌──────────────────────┐     │
+  │  AOS/DDS Topics      │     │
+  │  trigger ──►         │     │
+  │  ◄── status          ├─────┘
+  └──────────┬───────────┘ subscribe
+             │
+             ▼
+  ┌──────────────────────┐
+  │  MockControl         │
+  │  Component           │
+  │  (running in         │
+  │   onboard_main)      │
+  └──────────────────────┘</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Generated for Tranxmart Mock Control CLI design review &mdash; February 2026
+  </div>
+</div>
+</body>
+</html>
