@@ -222,6 +222,125 @@
     border-top: 1px solid var(--border);
   }
 
+  /* Incremental build section */
+  .incremental-section {
+    margin-bottom: 2rem;
+  }
+  .incremental-section > h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .incremental-banner {
+    background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(167,139,250,0.1));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .incremental-banner h3 {
+    color: var(--accent-a);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .incremental-banner p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-a), var(--accent-b));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.65rem;
+    top: 1.3rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+  .timeline-item.phase-a::before { background: var(--accent-a); }
+  .timeline-item.phase-b::before { background: var(--accent-b); }
+  .timeline-item h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+  }
+  .timeline-item .phase-time {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  .timeline-item ul {
+    list-style: none;
+    padding: 0;
+  }
+  .timeline-item li {
+    padding: 0.2rem 0;
+    font-size: 0.85rem;
+    padding-left: 1.2rem;
+    position: relative;
+    color: var(--text);
+  }
+  .timeline-item li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  /* File tree */
+  .file-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .file-tree h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  .file-tree pre {
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+  .file-tree .shared { color: var(--green); }
+  .file-tree .phase-a-file { color: var(--accent-a); }
+  .file-tree .phase-b-file { color: var(--accent-b); }
+  .file-tree .build-file { color: var(--yellow); }
+  .file-tree .note { color: var(--muted); font-style: italic; }
+
+  /* Arrow connector */
+  .arrow-connector {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--muted);
+    margin: 0.5rem 0;
+    letter-spacing: 0.5rem;
+  }
+
   @media (max-width: 768px) {
     .cards, .arch-grid { grid-template-columns: 1fr; }
     body { padding: 1rem; }
@@ -231,16 +350,17 @@
 <body>
 <div class="container">
   <h1>Mock Control CLI Tool &mdash; Option Comparison</h1>
-  <p class="subtitle">Two approaches for sending MockControlTrigger commands without the APOV UI</p>
+  <p class="subtitle">Two approaches for sending MockControlTrigger commands without the APOV UI<br>
+  <strong style="color: var(--accent-a);">Recommended:</strong> Build A first, then extend to B &mdash; they share the same core</p>
 
   <!-- ===== Side-by-Side Cards ===== -->
   <div class="cards">
 
     <!-- Option A -->
     <div class="card recommended">
-      <div class="badge">Recommended</div>
-      <h2><span class="label-a">Option A</span> &mdash; One-Shot Tool</h2>
-      <p class="tagline">Run once, send one command, exit. Chain in scripts.</p>
+      <div class="badge">Start Here</div>
+      <h2><span class="label-a">Phase 1</span> &mdash; One-Shot Tool</h2>
+      <p class="tagline">Run once, send one command, exit. Chain in scripts. <strong>Build first.</strong></p>
 
       <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">~1 hour</span></div>
       <div class="metric-row"><span class="metric-label">Code Size</span><span class="metric-value">~150&ndash;200 lines</span></div>
@@ -285,10 +405,10 @@
 
     <!-- Option B -->
     <div class="card">
-      <h2><span class="label-b">Option B</span> &mdash; Interactive REPL</h2>
-      <p class="tagline">Persistent process with live status and command loop.</p>
+      <h2><span class="label-b">Phase 2</span> &mdash; Interactive REPL</h2>
+      <p class="tagline">Extends Phase 1 with REPL loop and live status feedback.</p>
 
-      <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">~2&ndash;3 hours</span></div>
+      <div class="metric-row"><span class="metric-label">Build Time</span><span class="metric-value">+1&ndash;2 hours (extends Phase 1)</span></div>
       <div class="metric-row"><span class="metric-label">Code Size</span><span class="metric-value">~400&ndash;500 lines</span></div>
       <div class="metric-row"><span class="metric-label">Complexity</span><span class="metric-value">Medium</span></div>
       <div class="metric-row"><span class="metric-label">Interactivity</span><span class="metric-value">Full REPL</span></div>
@@ -346,15 +466,15 @@
     <thead>
       <tr>
         <th>Aspect</th>
-        <th class="col-a">Option A &mdash; One-Shot</th>
-        <th class="col-b">Option B &mdash; REPL</th>
+        <th class="col-a">Phase 1 &mdash; One-Shot</th>
+        <th class="col-b">Phase 2 &mdash; REPL (extends Phase 1)</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>Build Time</td>
         <td class="col-a">~1 hour</td>
-        <td class="col-b">~2&ndash;3 hours</td>
+        <td class="col-b">+1&ndash;2 hours (on top of Phase 1)</td>
       </tr>
       <tr>
         <td>Code Size</td>
@@ -393,6 +513,52 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- ===== Incremental Build Strategy ===== -->
+  <div class="incremental-section">
+    <h2>Recommended: Incremental Build Strategy</h2>
+
+    <div class="incremental-banner">
+      <h3>Option B builds on top of Option A &mdash; you don't have to choose one or the other</h3>
+      <p>The core send logic is identical between both options. The only difference is the entry point.
+         Build Option A first for immediate value, then extend to Option B later if interactive debugging proves valuable.
+         The shared core means upgrading from A to B costs only ~1&ndash;2 additional hours instead of 2&ndash;3 from scratch.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item phase-a">
+        <h4><span class="col-a">Phase 1:</span> Build Option A &mdash; One-Shot Tool</h4>
+        <div class="phase-time">~1 hour &bull; Immediately usable</div>
+        <ul>
+          <li>Create shared library: AOS node, MockControlTrigger builder, DDS publisher</li>
+          <li>Build <code style="color:var(--accent-a)">mock_ctl</code> binary with CLI flags</li>
+          <li>Test with <code>onboard_main</code> in mock control mode</li>
+          <li>Use in bash scripts and CI/CD pipelines</li>
+        </ul>
+      </div>
+
+      <div class="timeline-item phase-b">
+        <h4><span class="col-b">Phase 2 (optional):</span> Extend to Option B &mdash; REPL</h4>
+        <div class="phase-time">~1&ndash;2 additional hours &bull; Reuses Phase 1 core</div>
+        <ul>
+          <li>Add REPL loop: read command &rarr; parse &rarr; call shared send logic</li>
+          <li>Add DDS subscriber for <code>mock_control_status</code> on background thread</li>
+          <li>Add live status display formatting</li>
+          <li>Build <code style="color:var(--accent-b)">interactive_mock_ctl</code> binary</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="file-tree">
+      <h3>Code Structure (Shared Core)</h3>
+      <pre><span class="build-file">mock_control_cli/</span>
+  <span class="build-file">BUILD</span>                          <span class="note"># Bazel build targets</span>
+  <span class="shared">mock_control_sender.h</span>          <span class="note"># Core logic (shared by A and B)</span>
+  <span class="shared">mock_control_sender.cc</span>         <span class="note"># AOS node, message builder, publisher</span>
+  <span class="phase-a-file">mock_ctl_main.cc</span>               <span class="note"># Phase 1: one-shot entry point</span>
+  <span class="phase-b-file">interactive_mock_ctl_main.cc</span>   <span class="note"># Phase 2: REPL entry point (added later)</span></pre>
+    </div>
+  </div>
 
   <!-- ===== Architecture Diagrams ===== -->
   <div class="arch-section">
