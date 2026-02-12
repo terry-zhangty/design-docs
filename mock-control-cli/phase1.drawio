@@ -1,0 +1,60 @@
+<mxGraphModel>
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Title -->
+    <mxCell id="t1" value="&lt;b style=&quot;font-size:16px&quot;&gt;Phase 1: One-Shot CLI&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontColor=#2563eb;" vertex="1" parent="1">
+      <mxGeometry x="50" y="15" width="300" height="35" as="geometry"/>
+    </mxCell>
+
+    <!-- mock_ctl binary -->
+    <mxCell id="cli" value="&lt;b style=&quot;font-size:14px&quot;&gt;mock_ctl&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#64748b&quot;&gt;CLI flags: --action, --mode&lt;br&gt;--throttle, --brake, --steer&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#2563eb;strokeWidth=2;fontColor=#1e293b;arcSize=10;" vertex="1" parent="1">
+      <mxGeometry x="60" y="65" width="280" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- Arrow: calls -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#64748b;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="cli" target="core">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1_l" value="&lt;span style=&quot;font-size:12px;color:#475569;background:#ffffff;padding:2px 6px;border-radius:3px&quot;&gt;calls&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e1">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- Shared Core -->
+    <mxCell id="core" value="&lt;b style=&quot;font-size:13px&quot;&gt;MockControlSender&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#64748b&quot;&gt;Shared core library&lt;br&gt;AOS node + DDS publisher&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;strokeWidth=2;fontColor=#1e293b;arcSize=10;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+      <mxGeometry x="60" y="195" width="280" height="70" as="geometry"/>
+    </mxCell>
+
+    <!-- Arrow: publish -->
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16a34a;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="core" target="topic">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2_l" value="&lt;span style=&quot;font-size:12px;color:#16a34a;background:#ffffff;padding:2px 6px;border-radius:3px&quot;&gt;publish&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e2">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- Topic: mock_control_trigger -->
+    <mxCell id="topic" value="&lt;b style=&quot;font-size:12px&quot;&gt;mock_control_trigger&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748b&quot;&gt;AOS / DDS Topic&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#94a3b8;strokeWidth=1;fontColor=#1e293b;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="75" y="315" width="250" height="55" as="geometry"/>
+    </mxCell>
+
+    <!-- Arrow: subscribe -->
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d97706;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;endFill=1;" edge="1" parent="1" source="topic" target="comp">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3_l" value="&lt;span style=&quot;font-size:12px;color:#d97706;background:#ffffff;padding:2px 6px;border-radius:3px&quot;&gt;subscribe&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="e3">
+      <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+    </mxCell>
+
+    <!-- MockControl Component -->
+    <mxCell id="comp" value="&lt;b style=&quot;font-size:13px&quot;&gt;MockControl Component&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#64748b&quot;&gt;Running in onboard_main&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;strokeWidth=2;fontColor=#1e293b;arcSize=10;" vertex="1" parent="1">
+      <mxGeometry x="65" y="420" width="270" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Legend -->
+    <mxCell id="legend" value="&lt;span style=&quot;font-size:11px;color:#64748b&quot;&gt;&lt;b&gt;Legend:&lt;/b&gt;  &lt;span style=&quot;color:#2563eb&quot;&gt;Blue&lt;/span&gt; = Phase 1 binary  |  &lt;span style=&quot;color:#16a34a&quot;&gt;Green dashed&lt;/span&gt; = Shared core  |  &lt;span style=&quot;color:#d97706&quot;&gt;Amber&lt;/span&gt; = onboard_main&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="20" y="505" width="360" height="25" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>
