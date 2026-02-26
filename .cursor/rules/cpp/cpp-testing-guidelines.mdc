@@ -1,0 +1,76 @@
+---
+globs: *_test.cc,*_test.cpp
+description: "Testing guidelines and best practices for the Tranxmart project using Google Test framework. Defines test organization, structure, assertions, and integration with Bazel build system for comprehensive test coverage."
+---
+# C++ Testing Guidelines
+
+## 1. Test Framework
+- Use **Google Test** framework
+- Use `txm_cc_test` rule which automatically includes test main
+- Test files should end with `_test.cc`
+
+## 2. Test Organization
+- One test file per source file
+- Test file should be in the same directory as source
+- Use descriptive test names that explain the scenario
+
+## 3. Test Structure
+```cpp
+#include "my_component.h"
+
+#include "gtest/gtest.h"
+
+namespace txm::core::component {
+
+class MyComponentTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    // Test setup
+  }
+  
+  void TearDown() override {
+    // Test cleanup
+  }
+};
+
+TEST_F(MyComponentTest, InitializeReturnsOk) {
+  MyComponent component;
+  auto status = component.Initialize(config);
+  EXPECT_OK(status);
+}
+
+TEST_F(MyComponentTest, ProcessHandlesEmptyInput) {
+  MyComponent component;
+  Input input;
+  Output output;
+  
+  auto status = component.Process(input, &output);
+  EXPECT_OK(status);
+  EXPECT_TRUE(output.messages.empty());
+}
+
+}  // namespace txm::core::component
+```
+
+## 4. Assertions
+- Use `EXPECT_OK(status)` for status checking
+- Use `EXPECT_EQ`, `EXPECT_NE`, `EXPECT_TRUE`, `EXPECT_FALSE` for value checks
+- Use `EXPECT_THROW` for exception testing
+- Use `ASSERT_*` for fatal assertions that stop test execution
+
+## 5. Test Data
+- Use `testdata/` directories for test files
+- Create minimal test configurations
+- Use mock objects for external dependencies
+
+## 6. BUILD File for Tests
+```python
+txm_cc_test(
+    name = "my_component_test",
+    srcs = ["my_component_test.cc"],
+    deps = [
+        ":my_component",
+        "//txm/interface/proto/test:test_message_cc_proto",
+    ],
+)
+```

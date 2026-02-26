@@ -1,0 +1,8 @@
+---
+globs: "*bindings*.cc"
+description: "Pybind11 binding coding standards."
+---
+# Pybind11 Coding Standards
+
+- **REQUIRED**: Use explicit return types on lambdas/callables in `.def()` or `m.def()` (e.g. `-> bool`, `-> py::list`).
+- Expose C++ methods under **snake_case** in Python (e.g. `ShouldRun` → `should_run`).

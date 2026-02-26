@@ -1,0 +1,116 @@
+---
+globs: *.py,pyproject.toml,requirements*.txt
+description: "Python dependency management guidelines for the Tranxmart project. Covers adding dependencies to pyproject.toml, updating lock files, and configuring Bazel BUILD files."
+---
+# Python Dependency Management Guidelines
+
+## 1. Overview
+
+We are using Bazel to manage our Python dependencies. All dependencies are described in [pyproject.toml](mdc:pyproject.toml) and locked in `uv.lock`.
+
+## 2. Adding New Dependencies
+
+### 2.1 Procedure
+
+1. **Add to `pyproject.toml`:**
+
+```toml
+dependencies = [
+    "pyudev>=0.24.0",
+]
+```
+
+2. **Update lock files:**
+
+```bash
+./bazel/repin
+```
+
+3. **Update BUILD file:**
+
+```python
+py_library(
+    name = "disk_manager",
+    srcs = ["disk_manager.py"],
+    deps = [
+        "//txm/service/garage_pc/models:disk_info",
+        "@pip//pyudev",
+    ],
+)
+```
+
+### 2.2 Best Practices
+
+- **REQUIRED**: Always specify minimum version with `>=` (e.g., `pyudev>=0.24.0`)
+- **Recommended**: Pin to compatible versions for stability (e.g., `requests>=2.28.0,<3.0.0`)
+- **NEVER** use exact version pins (`==`) unless absolutely necessary
+
+## 3. Dependency Categories
+
+### 3.1 Runtime Dependencies
+
+Add to `dependencies` in `pyproject.toml`:
+
+```toml
+dependencies = [
+    "requests>=2.28.0",
+    "pydantic>=2.0.0",
+]
+```
+
+### 3.2 Development Dependencies
+
+Add to `[project.optional-dependencies]` section:
+
+```toml
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "mypy>=1.0.0",
+]
+```
+
+## 4. Using Dependencies in BUILD Files
+
+### 4.1 Pattern
+
+```python
+py_library(
+    name = "my_module",
+    srcs = ["my_module.py"],
+    deps = [
+        # Internal dependencies
+        "//txm/base/python:utils",
+        # External dependencies
+        "@pip//requests",
+        "@pip//pydantic",
+    ],
+)
+```
+
+### 4.2 Common External Dependencies
+
+| Package | Bazel Target |
+|---------|--------------|
+| requests | `@pip//requests` |
+| pydantic | `@pip//pydantic` |
+| pytest | `@pip//pytest` |
+| numpy | `@pip//numpy` |
+
+## 5. Troubleshooting
+
+### 5.1 Dependency Resolution Failed
+
+If `./bazel/repin` fails:
+
+1. Check for version conflicts in `pyproject.toml`
+2. Verify package names are correct
+3. Try relaxing version constraints
+
+### 5.2 Import Errors
+
+If imports fail at runtime:
+
+1. Verify the dependency is in `pyproject.toml`
+2. Run `./bazel/repin` to update lock files
+3. Check the BUILD file includes the `@pip//` target

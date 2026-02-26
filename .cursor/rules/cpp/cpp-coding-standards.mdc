@@ -1,0 +1,377 @@
+---
+globs: *.cc,*.h,*.cpp,*.hpp,*.cxx
+description: "C++23 coding standards and best practices for the Tranxmart autonomous vehicle project. Enforces Google C++ Style Guide compliance, modern C++ features usage, error handling patterns, logging standards, and code organization principles."
+---
+# C++ Coding Standards
+
+## 1. Code Style
+- Follow **Google C++ Style Guide** strictly
+- Use **C++23** features and modern practices
+- **No `using` directives in header files** - use fully qualified names
+- Use `using` aliases in `.cc` files for long type names (e.g., `using Status = absl::Status`)
+
+## 2. Error Handling
+- Use `absl::Status` and `absl::StatusOr<T>` for error handling (via project wrappers)
+- Use `CHECK` and `CHECK_OK` macros for assertions
+- Use `RETURN_IF_ERROR` and `RETURN_ERROR_IF` macros from [txm/base/status/status.h](mdc:txm/base/status/status.h)
+- **When using status functionality**: `#include "txm/base/status/status.h"` instead of `#include "absl/status/status.h"`
+
+## 3. Logging
+- Use logging macros from [txm/base/cpp/log/log.h](mdc:txm/base/cpp/log/log.h) for all log output
+- Use `LOG(INFO)`, `LOG(WARNING)`, `LOG(ERROR)`, `LOG(FATAL)` macros instead of `absl::log::Log`
+- Include necessary logging headers: `#include "txm/base/cpp/log/log.h"`
+
+## 4. Headers and Includes
+- Use `#pragma once` for header guards [TXM] *(overrides [GSG#The__define_Guard])*
+- Include order *(enforced by clang-format)*: corresponding `.h` first (e.g., `foo.cc` includes `foo.h` first) → C system headers (`<*.h>`) → C++ standard library (`<vector>`) → project headers (`"txm/..."`) → third-party [TXM] *(differs from [GSG#Names_and_Order_of_Includes])*
+- Use C++17 nested namespace syntax: `namespace a::b::c` instead of `namespace a { namespace b { namespace c {`
+- Avoid using forward declarations where possible. Instead, include the headers you need. [GSG#Forward_Declarations]
+- Include what you use: directly include headers for all symbols you use, don't rely on transitive includes. [GSG#Include_What_You_Use]
+- **MANDATORY**: When modifying `#include` statements for `"txm/..."` or third-party headers, update BUILD file's `deps` accordingly: add missing deps, remove unused deps [TXM]
+
+## 5. Naming Conventions
+- Classes: `PascalCase` (e.g., `ComponentBase`)
+- Functions: `PascalCase` (e.g., `ProcessInternal`, `GetUserData`)
+- Variables: `snake_case` (e.g., `user_data`, `max_retries`)
+- Constants: `kConstantName` (e.g., `kMaxRetries`)
+- Private members: `member_name_` (trailing underscore)
+- Namespaces: `snake_case`, top-level based on project name (e.g., `txm::base::image`) [GSG#Namespace_Names]
+- Enumerators: `kEnumValue` (like constants), not `MACRO_STYLE` [GSG#Enumerator_Names]
+
+## 6. Modern C++ Features
+- **Ownership**: Prefer `std::unique_ptr` (exclusive); use `std::shared_ptr` only when ownership is truly shared [GSG#Ownership_and_Smart_Pointers]
+- **Raw pointers mean "not owned"** - never use raw pointers to transfer ownership; use `std::move` with smart pointers
+- Prefer `auto` for type deduction when type is obvious
+- Use concepts for template constraints (C++20)
+- Use `std::optional` for optional values
+- Use range-based for loops and algorithms
+
+## 7. Class Design and Inheritance [GSG#Classes]
+- **REQUIRED**: Use `explicit` for single-argument constructors (prevents implicit conversions) [GSG#Implicit_Conversions]
+- **REQUIRED**: Base classes must have virtual destructors
+- **REQUIRED**: Non-polymorphic classes must be marked `final`
+- **REQUIRED**: Use `override` for virtual function overrides (enables compiler checking) [GSG#Inheritance]
+- Use `DISALLOW_COPY_AND_ASSIGN` or `DISALLOW_COPY_AND_MOVE` macros from [txm/base/cpp/macros.h](mdc:txm/base/cpp/macros.h) instead of manually writing `= delete`
+- Use `struct` for passive data bundles; `class` for objects with invariants or behavior [GSG#Structs_vs._Classes]
+
+## 8. absl::Flag Usage
+- Use `absl::Flag` for command-line flags and configuration parameters
+- Include necessary flag headers:  `#include "txm/base/cpp/flag/flag.h"`
+- **Flag declaration pattern**:
+  ```cpp
+  ABSL_FLAG(std::string, config_file, "default.conf", "Path to configuration file");
+  ABSL_FLAG(int32_t, max_retries, 3, "Maximum number of retry attempts");
+  ABSL_FLAG(bool, enable_debug, false, "Enable debug logging");
+  ```
+- **Flag access pattern**:
+  ```cpp
+  std::string config_path = absl::GetFlag(FLAGS_config_file);
+  int32_t retries = absl::GetFlag(FLAGS_max_retries);
+  bool debug_enabled = absl::GetFlag(FLAGS_enable_debug);
+  ```
+- **Main function pattern**:
+  ```cpp
+  int main(int argc, char* argv[]) {
+    absl::ParseCommandLine(argc, argv);
+    // ... rest of main logic
+  }
+  ```
+- **Flag naming**: Use `snake_case` for flag names (e.g., `config_file`, `max_retries`)
+- **Default values**: Always provide meaningful defaults
+- **Help text**: Write clear, concise descriptions for each flag
+- **Type safety**: Use appropriate types (`std::string`, `int32_t`, `bool`, `double`, etc.)
+
+## 9. Comments
+- Use `//` for single-line comments, `/* */` for multi-line
+- **Use concise function comments without @brief, @param, @return tags**
+- Example: `// Push element to queue (blocking version)` instead of `/** @brief Push element... */`
+- **Comment only necessary code, not obvious implementations**
+- **DO NOT comment obvious code**: function names, simple assignments, basic control flow
+- **DO comment**: non-obvious business logic, complex algorithms, edge cases, performance considerations
+- **Bad examples**: `// Push element to queue`, `// Add to back`, `// Check if empty`
+- **Good examples**: `// If queue is full, overwrite oldest element`, `// Handle edge case when buffer wraps around`
+
+## 10. Parameter Comments (Minimalism Principle)
+- **Core principle**: Variable names should be self-documenting; comments should only add information the name cannot convey
+- **DELETE @param if**: The comment merely restates or paraphrases the parameter name
+- **KEEP @param if**: The comment provides essential context that cannot be expressed in the name:
+  - Units of measurement (e.g., `// in milliseconds`, `// bytes per row`)
+  - Valid value ranges (e.g., `// 0-255`, `// must be power of 2`)
+  - Memory layout details (e.g., `// row-major`, `// transposed`)
+  - Pre/post-conditions (e.g., `// must be pre-allocated`, `// caller owns memory`)
+  - Special semantics (e.g., `// nullptr means use default`)
+
+### Decision Checklist
+Before writing a @param comment, ask:
+1. Does the parameter name already convey this information?
+2. Can I improve the parameter name instead of adding a comment?
+3. Is this information essential for correct usage?
+If answers are "yes, no, no" → DELETE the comment
+
+## 11. Control Flow
+
+### Always Use Braces [TXM]
+**Always** enclose control statement bodies with braces, even for single statements.
+*(GSG allows exceptions for historical reasons; we do not allow them)*
+
+```cpp
+// GOOD
+if (condition) {
+  return false;
+}
+
+// BAD - no braces (GSG exception, but NOT allowed here)
+if (x == kFoo) return new Foo();
+
+// BAD - same line with braces (GSG exception, but NOT allowed here)
+if (x == kFoo) { return new Foo(); }
+
+// BAD - condition and body on separate lines without braces
+if (x == kBar)
+  Bar(arg1, arg2, arg3);
+```
+
+### Use Early Return/Continue
+Prefer early return/continue to reduce nesting and improve readability.
+
+## 12. Function Parameters [GSG#Functions]
+
+### Parameter Rules
+- **Prefer return values** over output parameters for returning data
+- **Parameter order**: inputs first, outputs last
+- **Input parameters**: value or `const&`; optional inputs use `const T*`
+- **Output parameters**: non-optional use `T&`; optional use `T*`
+- **Virtual functions**: never use default arguments (binds at compile-time, not polymorphic)
+
+```cpp
+// GOOD - return value preferred
+Config LoadConfig();
+
+// GOOD - non-optional output via reference
+absl::Status LoadConfig(const std::string& path, Config& out_config);
+
+// GOOD - optional output via pointer
+absl::Status TryLoadConfig(const std::string& path, Config* out_config);
+
+// GOOD - optional input via const pointer
+void Process(const Config* optional_config = nullptr);
+```
+
+## 13. Map Variable Naming
+Use `{key}_to_{value}` pattern for map variables:
+```cpp
+// GOOD
+std::map<std::string, LogData> module_name_to_log_data_;
+
+// BAD
+std::map<std::string, LogData> log_data_map_;
+```
+
+## 14. Include Order
+Use `""` for project headers (not `<>`), so clang-format sorts them correctly after system headers:
+```cpp
+// GOOD - clang-format will sort after system headers
+#include "txm/base/image/fastjpeg/kernels/color_convert.h"
+
+// BAD - may be sorted with system headers
+#include <txm/base/image/fastjpeg/kernels/color_convert.h>
+```
+
+## 15. Visualization/UI Code
+In visualization or UI code, don't strictly validate business data. Log errors and return/continue instead of crashing:
+```cpp
+// GOOD - in visualization code
+if (!IsValid(data)) {
+  LOG(ERROR) << "Invalid data received";
+  return;
+}
+
+// BAD - in visualization code
+CHECK(IsValid(data)) << "Data must be valid";
+```
+
+## 16. Timestamp and ID Handling
+Don't compare timestamps for equality. Use message IDs or shared_ptr comparison for message consumption tracking:
+```cpp
+// BAD
+if (current_msg.timestamp() == last_processed_timestamp_) {
+  return;  // Already processed
+}
+
+// GOOD
+if (current_msg_ptr_ == last_processed_msg_ptr_) {
+  return;  // Already processed
+}
+```
+
+## 17. Namespaces [GSG#Namespaces]
+- **Never use `using namespace xxx`** - causes namespace pollution
+- Use unnamed namespaces in `.cc` files for internal linkage (preferred over `static`) [GSG#Internal_Linkage] [TXM]
+- Prefer relative namespace paths over fully qualified names when within a shared parent namespace [TXM]
+
+```cpp
+// BAD: Redundant root 'txm::base'
+namespace txm::base::path {
+void Function(txm::base::module::Widget w) { ... }
+}
+
+// GOOD: Clean relative path
+namespace txm::base::path {
+void Function(module::Widget w) { ... }
+} // namespace txm::base::path
+```
+
+## 18. Variables [GSG#Local_Variables] [GSG#Static_and_Global_Variables]
+- **Declare variables at first use**, not at function start - minimizes scope
+- **Always initialize variables** at declaration
+- **Avoid non-trivial static/global variables** - initialization order is undefined across translation units
+- For global constants, prefer `constexpr` over `const` static variables
+- **Avoid static local variables with dynamic initialization** in functions that may be called from multiple threads
+
+## 19. Other C++ Features [GSG#Other_C++_Features]
+
+### Exceptions [GSG#Exceptions]
+- **Do not use C++ exceptions** - use `absl::Status` for error handling instead
+- **Exception**: when integrating with third-party libraries that use exceptions, handle them at the boundary
+
+### Type Casting [GSG#Casting]
+- **Use C++ style casts**: `static_cast<>`, `const_cast<>`, `reinterpret_cast<>`
+- **Use brace initialization** for arithmetic conversions: `int64_t{1} << 42`
+- **Never use C-style casts**: `(int)x` → use `static_cast<int>(x)`
+- **Avoid `dynamic_cast`**: prefer virtual functions for polymorphic behavior [GSG#Run-Time_Type_Information__RTTI_]
+
+### Literals and Operators
+- **Pointers**: use `nullptr`, not `0` or `NULL` [GSG#0_and_nullptr/NULL]
+- **Integers**: use `0` for integer zero
+- **Prefer `++i`** over `i++` (avoids unnecessary copy for iterators) [GSG#Preincrement_and_Predecrement]
+- **Prefer `sizeof(var)`** over `sizeof(Type)` - stays correct if type changes [GSG#sizeof]
+
+### Use of const [GSG#Use_of_const]
+- **Use `const` wherever meaningful** - documents intent and enables compiler checks
+- **`const` member functions**: mark if method doesn't modify object state
+- **`const` local variables**: mark if not modified after initialization
+- **`mutable`**: only for non-observable internal state (e.g., caches, mutexes)
+
+### Integer Types [GSG#Integer_Types]
+- **Use `int`** for general integers; use `int16_t`, `int32_t`, `int64_t` from `<cstdint>` when specific size needed
+- **Avoid `short`, `long`, `long long`** - sizes vary across platforms
+- **Avoid `unsigned` for non-negative values** - use signed types; unsigned only for bit operations/hashing
+
+### Preprocessor Macros [GSG#Preprocessor_Macros]
+- **Prefer modern C++ over macros**: use `constexpr` for constants, `inline` functions for code, `enum` for sets
+- **Macro naming**: `ALL_CAPS_WITH_UNDERSCORES`
+- **Header-exported macros**: must use project prefix (e.g., `TXM_CHECK_OK`) for global uniqueness
+- **Multi-statement macros**: wrap in `do { ... } while (0)`
+
+## 20. Designated Initializers [GSG#Designated_initializers]
+- **Use designated initializers** for struct initialization - improves readability
+- **Order must match definition** - initializers must appear in the same order as fields in struct definition
+
+```cpp
+struct Point { float x; float y; float z; };
+
+// GOOD: Order matches definition
+Point p = {.x = 1.0, .y = 2.0};  // z defaults to 0
+
+// BAD: Wrong order - compilation error in C++20
+Point p = {.y = 2.0, .x = 1.0};
+```
+
+## 21. Lambda Expressions [GSG#Lambda_expressions]
+- **Keep lambdas short** - for complex logic, prefer named functions
+- **Avoid default captures** (`[=]`, `[&]`) - explicitly list captured variables
+- **Avoid capturing `this`** unless necessary - leads to lifetime issues
+- **Use explicit parameter types** in function signatures that accept lambdas
+
+```cpp
+// GOOD: Short lambda, explicit capture
+auto result = std::find_if(v.begin(), v.end(), [threshold](int x) { return x > threshold; });
+
+// BAD: Long lambda with complex logic - use named function instead
+auto process = [&](const Data& d) {
+  // 20+ lines of complex processing...
+};
+```
+
+## 22. Type Aliases [GSG#Aliases]
+- **Prefer `using` over `typedef`** - clearer syntax, supports templates
+
+```cpp
+// GOOD: using alias
+using IntVec = std::vector<int>;
+template<typename T> using Vec = std::vector<T>;
+
+// BAD: typedef (legacy style)
+typedef std::vector<int> IntVec;
+```
+
+## 23. Switch Statements [GSG#Switch_Statements]
+- **Always include `default` case** (unless switching on enum - compiler warns for unhandled values)
+- **Use `[[fallthrough]]`** to annotate intentional fall-through between cases
+
+```cpp
+switch (x) {
+  case 1:
+    DoA();
+    [[fallthrough]];  // Intentional fall-through
+  case 2:
+    DoB();
+    break;
+  default:
+    LOG(FATAL) << "Unexpected value: " << x;
+}
+```
+
+## 24. Formatting [GSG#Formatting]
+- **Floating-point literals**: always include digits on both sides of decimal point (`1.0f` not `1.f` or `.5f`)
+- **Return values**: don't wrap return expressions in unnecessary parentheses (`return x + y;` not `return (x + y);`)
+
+## 25. Non-owning Views
+
+### std::string_view
+- **Prefer `std::string_view`** over `const std::string&` for read-only string parameters
+- Accepts `const char*`, `std::string`, string literals - all without copying
+- **Never store** `string_view` in class members (lifetime issue) - use `std::string` instead
+- **Not null-terminated** - don't pass `.data()` to C APIs expecting null-terminated strings
+
+### std::span
+- **Prefer `std::span<const T>`** over `const std::vector<T>&` for read-only array parameters
+- **Prefer `std::span<T>`** over `T* ptr, size_t len` for mutable array parameters
+- Accepts `std::vector`, `std::array`, C arrays - all without copying
+- **Never store** `span` in class members (lifetime issue)
+
+---
+## References
+- **[GSG]**: [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) - The foundational C++ style guide this project follows
+  - `[GSG#The__define_Guard]`: [The #define Guard](https://google.github.io/styleguide/cppguide.html#The__define_Guard)
+  - `[GSG#Forward_Declarations]`: [Forward Declarations](https://google.github.io/styleguide/cppguide.html#Forward_Declarations)
+  - `[GSG#Include_What_You_Use]`: [Include What You Use](https://google.github.io/styleguide/cppguide.html#Include_What_You_Use)
+  - `[GSG#Names_and_Order_of_Includes]`: [Names and Order of Includes](https://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes)
+  - `[GSG#Namespace_Names]`: [Namespace Names](https://google.github.io/styleguide/cppguide.html#Namespace_Names)
+  - `[GSG#Namespaces]`: [Namespaces](https://google.github.io/styleguide/cppguide.html#Namespaces)
+  - `[GSG#Internal_Linkage]`: [Internal Linkage](https://google.github.io/styleguide/cppguide.html#Internal_Linkage)
+  - `[GSG#Classes]`: [Classes](https://google.github.io/styleguide/cppguide.html#Classes)
+  - `[GSG#Implicit_Conversions]`: [Implicit Conversions](https://google.github.io/styleguide/cppguide.html#Implicit_Conversions)
+  - `[GSG#Inheritance]`: [Inheritance](https://google.github.io/styleguide/cppguide.html#Inheritance)
+  - `[GSG#Structs_vs._Classes]`: [Structs vs. Classes](https://google.github.io/styleguide/cppguide.html#Structs_vs._Classes)
+  - `[GSG#Functions]`: [Functions](https://google.github.io/styleguide/cppguide.html#Functions)
+  - `[GSG#Ownership_and_Smart_Pointers]`: [Ownership and Smart Pointers](https://google.github.io/styleguide/cppguide.html#Ownership_and_Smart_Pointers)
+  - `[GSG#Local_Variables]`: [Local Variables](https://google.github.io/styleguide/cppguide.html#Local_Variables)
+  - `[GSG#Static_and_Global_Variables]`: [Static and Global Variables](https://google.github.io/styleguide/cppguide.html#Static_and_Global_Variables)
+  - `[GSG#Other_C++_Features]`: [Other C++ Features](https://google.github.io/styleguide/cppguide.html#Other_C++_Features)
+  - `[GSG#Exceptions]`: [Exceptions](https://google.github.io/styleguide/cppguide.html#Exceptions)
+  - `[GSG#Casting]`: [Casting](https://google.github.io/styleguide/cppguide.html#Casting)
+  - `[GSG#Run-Time_Type_Information__RTTI_]`: [Run-Time Type Information (RTTI)](https://google.github.io/styleguide/cppguide.html#Run-Time_Type_Information__RTTI_)
+  - `[GSG#0_and_nullptr/NULL]`: [0 and nullptr/NULL](https://google.github.io/styleguide/cppguide.html#0_and_nullptr/NULL)
+  - `[GSG#Preincrement_and_Predecrement]`: [Preincrement and Predecrement](https://google.github.io/styleguide/cppguide.html#Preincrement_and_Predecrement)
+  - `[GSG#sizeof]`: [sizeof](https://google.github.io/styleguide/cppguide.html#sizeof)
+  - `[GSG#Use_of_const]`: [Use of const](https://google.github.io/styleguide/cppguide.html#Use_of_const)
+  - `[GSG#Integer_Types]`: [Integer Types](https://google.github.io/styleguide/cppguide.html#Integer_Types)
+  - `[GSG#Preprocessor_Macros]`: [Preprocessor Macros](https://google.github.io/styleguide/cppguide.html#Preprocessor_Macros)
+  - `[GSG#Lambda_expressions]`: [Lambda Expressions](https://google.github.io/styleguide/cppguide.html#Lambda_expressions)
+  - `[GSG#Designated_initializers]`: [Designated Initializers](https://google.github.io/styleguide/cppguide.html#Designated_initializers)
+  - `[GSG#Aliases]`: [Aliases](https://google.github.io/styleguide/cppguide.html#Aliases)
+  - `[GSG#Switch_Statements]`: [Switch Statements](https://google.github.io/styleguide/cppguide.html#Switch_Statements)
+  - `[GSG#Enumerator_Names]`: [Enumerator Names](https://google.github.io/styleguide/cppguide.html#Enumerator_Names)
+  - `[GSG#Formatting]`: [Formatting](https://google.github.io/styleguide/cppguide.html#Formatting)
+- **[TXM]**: Tranxmart project-specific conventions - Rules defined by the Tranxmart team that extend or override GSG

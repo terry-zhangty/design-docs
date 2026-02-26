@@ -1,0 +1,55 @@
+---
+alwaysApply: true
+description: "Development workflow and best practices for the Tranxmart project."
+---
+# Development Workflow
+
+## 1. Development Steps (Execute in Order)
+1. Implement functionality
+2. Write tests
+3. Run tests to verify functionality
+4. **MANDATORY**: After ANY code changes, run `bazel run //:format -- {files}` to format code
+5. **MANDATORY**: After ANY code changes, check and fix linting errors
+6. Only then consider the task complete
+
+## 2. File Creation Rules
+- **NEVER create demo programs, example files, README files, or documentation unless explicitly requested by the user**
+- **ONLY create files that are explicitly requested by the user**
+- **If you think a demo would be useful, DO NOT create it - ask the user first**
+
+## 3. Code Quality
+- **MANDATORY**: Run `bazel run //:format -- {files}` to format code immediately after implementation
+- **MANDATORY**: Follow linting rules and fix warnings before considering code complete
+- Always include appropriate copyright headers
+- Follow language-specific naming conventions
+- Use proper error handling patterns
+- Include necessary tests for new functionality
+
+## 4. Testing
+- Write tests for all new functionality
+- Run tests with `bazel test //...`
+
+## 5. Dependencies
+- Add new dependencies to [MODULE.bazel](mdc:MODULE.bazel)
+- Use Bzlmod format, not WORKSPACE
+- Prefer Bazel-managed dependencies over system packages
+
+## 6. Experimental Features
+- Place experimental code in `experimental/` directory
+- Use personal subdirectories for individual experiments
+
+## 7. Configuration Management
+- Store configuration files in `config/` directory
+- Use protobuf for structured configuration
+- Support both file-based and programmatic configuration
+
+## 8. Performance
+- Profile code for performance bottlenecks
+- Use appropriate data structures and algorithms
+- Consider memory allocation patterns
+- Use constexpr where possible for compile-time evaluation
+
+## 9. Documentation Policy
+- **STRICTLY PROHIBITED**: Creating documentation files unless explicitly requested
+- **FORBIDDEN**: README.md, docs/, examples/, demos/, samples/
+- **REQUIRED**: Ask user permission before creating any file not in the original request

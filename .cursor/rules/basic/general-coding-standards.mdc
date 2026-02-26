@@ -1,0 +1,56 @@
+---
+globs: *.cc,*.h,*.cpp,*.hpp,*.cxx,*.py,*.proto
+description: "General coding standards that apply across all languages. Language-specific rules are in their respective coding standards files."
+---
+# General Coding Standards
+
+General coding standards that apply across all languages. For language-specific rules, see:
+- C++: `cpp/cpp-coding-standards.mdc`
+- Python: `python/python-coding-standards.mdc`
+- Protobuf: `protobuf/protobuf-coding-standards.mdc`
+
+## 1. Code Structure
+
+### Avoid Excessive Blank Lines
+- Use blank lines sparingly to separate semantic blocks
+- Don't add multiple consecutive blank lines
+- Don't add blank lines at the start/end of functions
+
+### Write Symmetric Logic Symmetrically
+- If you have symmetric operations (e.g., `is_open` and `is_close` checks), implement both sides consistently
+- Avoid asymmetric code patterns for symmetric logic
+
+## 2. Naming
+
+### Client Instance Variables Use `_client` Suffix
+- When assigning a client class instance to a variable, name it with the `_client` suffix
+- Example: `txm_center_client = TxmCenterClient(...)` not `txm_center = TxmCenterClient(...)`
+
+### Function Names Must Reflect Behavior
+- Function names should accurately describe what the function does
+- If a function has fallback/reset behavior, include that in the name (e.g., `PushWithFallbackReset` instead of just `Push`)
+
+## 3. Constants
+
+### Define Named Constants
+- Use named constants for magic numbers
+- Exception: Simple values used only once in an obvious context
+
+```
+// GOOD
+MAX_TABLE_SIZE = 10
+if index < MAX_TABLE_SIZE: ...
+
+// BAD
+if index < 10: ...
+```
+
+## 4. Comments
+
+### English Only
+- **REQUIRED**: Write all comments, docstrings, and documentation in **English only**
+
+### Don't Comment Obvious Code
+- Do not add comments to simple, self-explanatory code
+- Only add comments when the logic is non-obvious or requires explanation
+- Good reasons to comment: explaining *why* something is done, documenting edge cases, clarifying complex algorithms

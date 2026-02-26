@@ -1,0 +1,14 @@
+---
+description: "Slack notification target and feature toggles for Cursor -> Slack push (cursor-slack-bot MCP)."
+---
+# Slack Notify Config
+
+Use the **cursor-slack-bot** MCP server for notifications (Bot identity so you get push notifications). Config is in ~/.cursor/mcp.json under the "cursor-slack-bot" entry.
+
+- **SLACK_CHANNEL_ID**: `C0AHMPKHMT2` (#cursor-notify channel)
+- **SLACK_BOT_TOKEN**: set in mcp.json env — replace `REPLACE_WITH_YOUR_BOT_TOKEN` with your Bot User OAuth Token (xoxb-...) from api.slack.com/apps
+- **SLACK_NOTIFY_ON_BUILD**: true — call notify_build_result after bazel build/test completes
+- **SLACK_NOTIFY_ON_TASK_COMPLETE**: true — call notify_task_complete when a multi-step task is done
+- **SLACK_NOTIFY_ON_DECISION_NEEDED**: true — call ask_user_decision when Agent needs user decision
+
+To change channel: update SLACK_CHANNEL_ID in mcp.json (e.g. from slack_search_channels).

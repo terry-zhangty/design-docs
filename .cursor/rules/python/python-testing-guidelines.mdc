@@ -1,0 +1,237 @@
+---
+globs: *_test.py
+description: "Python testing guidelines and best practices for the Tranxmart project. Covers pytest testing conventions, test organization, fixtures, and test file naming."
+---
+# Python Testing Guidelines
+
+## 1. Core Principles
+
+### Test Framework
+Must use pytest as your test framework.
+
+### Testing Philosophy
+- Write clear, maintainable, and readable test code
+- Tests should be independent and repeatable
+- Follow the AAA pattern: Arrange, Act, Assert
+- Test code quality should be equal to production code quality
+
+## 2. Naming Conventions
+
+### Test File Naming
+**Test file**: `{module}_test.py` next to `{module}.py`
+
+### Test Function Naming
+```python
+# Format: test_<function_name>_<scenario>
+def test_user_login_with_valid_credentials() -> None:
+    pass
+```
+
+**DO NOT add docstrings to test functions** - the function name should be self-explanatory. Test function names should clearly describe what is being tested. Example: `test_deploy_target_get_by_name()` is clear enough without a docstring.
+
+### Test Class Naming
+```python
+# Format: Test<ClassName>
+class TestUserService:
+    pass
+```
+
+## 3. Frameworks & Tools
+
+### Recommended Tech Stack
+- Testing Framework: pytest
+- Mocking: unittest.mock
+- Fixture Management: pytest fixtures
+- Async Testing: pytest-asyncio
+
+## 4. AAA Pattern Example
+```python
+def test_create_user_with_valid_data() -> None:
+    # Arrange - Set up test data and dependencies
+    user_data = {
+        "username": "testuser",
+        "email": "test@example.com",
+        "password": "SecurePass123"
+    }
+    user_service = UserService()
+    
+    # Act - Execute the operation being tested
+    result = user_service.create_user(user_data)
+    
+    # Assert - Verify the results
+    assert result is not None
+    assert result.username == "testuser"
+    assert result.email == "test@example.com"
+    assert result.id is not None
+```
+
+## 5. Fixtures Guidelines
+
+### Fixture Definition
+```python
+# conftest.py
+import pytest
+
+from src.database import Database
+from src.user_service import UserService
+
+@pytest.fixture
+def db_connection():
+    """Database connection fixture"""
+    db = Database(":memory:")
+    db.connect()
+    yield db
+    db.close()
+
+@pytest.fixture
+def user_service(db_connection):
+    """User service fixture"""
+    return UserService(db_connection)
+
+@pytest.fixture
+def sample_user():
+    """Sample user data"""
+    return {
+        "username": "testuser",
+        "email": "test@example.com",
+        "age": 25
+    }
+```
+
+### Fixture Scopes
+```python
+@pytest.fixture(scope="function")  # Run once per test function (default)
+def function_fixture():
+    pass
+
+@pytest.fixture(scope="class")  # Run once per test class
+def class_fixture():
+    pass
+
+@pytest.fixture(scope="module")  # Run once per module
+def module_fixture():
+    pass
+
+@pytest.fixture(scope="session")  # Run once per test session
+def session_fixture():
+    pass
+```
+
+## 6. Mocking Guidelines
+### When to Use Mocks
+- External API calls
+- Database operations
+- File system operations
+- Time-related operations
+- Random number generation
+- Third-party service dependencies
+
+### Mock Examples
+```python
+from unittest.mock import Mock, patch, MagicMock
+import pytest
+
+def test_send_email_calls_smtp_service() -> None:
+    # Arrange
+    mock_smtp = Mock()
+    email_service = EmailService(smtp_client=mock_smtp)
+    
+    # Act
+    email_service.send_email("test@example.com", "Hello", "World")
+    
+    # Assert
+    mock_smtp.send.assert_called_once_with(
+        to="test@example.com",
+        subject="Hello",
+        body="World"
+    )
+
+@patch('src.payment.stripe_api.charge')
+def test_process_payment_with_stripe(mock_stripe_charge) -> None:
+    # Arrange
+    mock_stripe_charge.return_value = {"id": "ch_123", "status": "succeeded"}
+    processor = PaymentProcessor()
+    
+    # Act
+    result = processor.process_payment(100, "usd")
+
+    # Assert
+    assert result["status"] == "succeeded"
+    mock_stripe_charge.assert_called_once()
+```
+
+### Mock Best Practices
+```python
+# Good - Mock external dependencies
+@patch('requests.get')
+def test_fetch_user_data(mock_get) -> None:
+    mock_get.return_value.json.return_value = {"id": 1, "name": "John"}
+    result = fetch_user_from_api(1)
+    assert result["name"] == "John"
+
+# Bad - Don't mock what you're testing
+@patch('src.user_service.UserService.create_user')
+def test_create_user(mock_create) -> None:
+    mock_create.return_value = User(id=1)
+    # This doesn't test anything!
+```
+
+## 7. Parametrized Tests
+### Basic Parametrization
+```python
+@pytest.mark.parametrize("input_value,expected", [
+    (0, 0),
+    (1, 1),
+    (2, 4),
+    (3, 9),
+    (-2, 4),
+])
+def test_square_function(input_value: int, expected: int) -> None:
+    assert square(input_value) == expected
+```
+
+### Complex Parametrization
+```python
+@pytest.mark.parametrize("username,email,should_pass", [
+    ("validuser", "valid@example.com", True),
+    ("", "valid@example.com", False),
+    ("validuser", "invalid-email", False),
+    ("ab", "valid@example.com", False),  # Username too short
+    ("a" * 51, "valid@example.com", False),  # Username too long
+])
+def test_user_validation(username: str, email: str, should_pass: bool) -> None:
+    validator = UserValidator()
+    result = validator.validate(username, email)
+    assert result.is_valid == should_pass
+```
+
+## 8. Exception Testing
+### Testing Exception Raising
+```python
+def test_divide_by_zero_raises_value_error() -> None:
+    calculator = Calculator()
+    
+    with pytest.raises(ValueError) as exc_info:
+        calculator.divide(10, 0)
+    
+    assert "Cannot divide by zero" in str(exc_info.value)
+
+def test_invalid_user_age_raises_validation_error() -> None:
+    with pytest.raises(ValidationError, match=r"Age must be.*"):
+        User(name="John", age=-5)
+```
+
+## 9. Bazel BUILD File for Tests
+
+When using Bazel, use the `py_test` rule in BUILD files:
+
+```python
+py_test(
+    name = "config_utils_test",
+    srcs = ["config_utils_test.py"],
+    deps = [
+        ":config_utils",
+        "@pip//pytest",
+    ],
+)
+```
