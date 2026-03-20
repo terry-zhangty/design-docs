@@ -11,7 +11,7 @@
   --surface2: #162032;
   --border: #334155;
   --text: #e2e8f0;
-  --muted: #94a3b8;
+  --muted: #b0bec5;
   --accent: #38bdf8;
   --accent-dim: rgba(56, 189, 248, 0.12);
   --warn: #fbbf24;
@@ -38,7 +38,7 @@ a:hover { text-decoration: underline; }
   flex-direction: column;
   justify-content: center;
   padding: 3rem 0 2.5rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent),
     linear-gradient(180deg, var(--surface2) 0%, var(--bg) 100%);
@@ -55,7 +55,7 @@ a:hover { text-decoration: underline; }
   max-width: 52ch;
   margin-bottom: 1.5rem;
 }
-.hero .sub-cn { display: block; margin-top: 0.35rem; font-size: 0.92rem; opacity: 0.9; }
+.hero .sub-cn { display: block; margin-top: 0.35rem; font-size: 0.92rem; opacity: 1; }
 .metrics {
   display: flex; flex-wrap: wrap; gap: 0.6rem;
 }
@@ -70,7 +70,8 @@ a:hover { text-decoration: underline; }
 .metric strong { color: var(--accent); font-weight: 600; }
 
 /* Sections */
-section { padding: 2.75rem 0; border-bottom: 1px solid var(--border); }
+hr { border-color: rgba(148, 163, 184, 0.4); }
+section { padding: 2.75rem 0; border-bottom: 1px solid rgba(148, 163, 184, 0.4); }
 section:last-of-type { border-bottom: none; }
 h2 {
   font-size: 1.35rem;
@@ -169,7 +170,7 @@ ul.tight li { margin-bottom: 0.35rem; }
 /* Research cards */
 .grid3 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 0.85rem;
 }
 .research-card {
@@ -313,9 +314,22 @@ details.acc .body { margin-top: 0.65rem; font-size: 0.9rem; color: var(--muted);
 footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(148, 163, 184, 0.4);
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: inherit;
+}
+
+@media (max-width: 640px) {
+  .page, main, section {
+    max-width: none;
+    width: 100%;
+  }
 }
 
 @media print {
