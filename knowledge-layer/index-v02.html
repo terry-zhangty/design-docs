@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识层 — 团队 Agent 知识体系 · Knowledge Layer</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #162032;
+  --border: #334155;
+  --text: #e2e8f0;
+  --muted: #b0bec5;
+  --accent: #38bdf8;
+  --accent-dim: rgba(56, 189, 248, 0.12);
+  --warn: #fbbf24;
+  --ok: #34d399;
+  --bad: #fb7185;
+  --sub-op: 0.84;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+}
+:lang(en) {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+}
+:lang(zh), :lang(zh-CN) {
+  font-family: "PingFang SC", "Microsoft YaHei UI", "Noto Sans CJK SC", sans-serif;
+  line-height: 1.75;
+  font-size: 15.5px;
+  font-variant-east-asian: simplified;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+
+.sub-en, .bilingual :lang(en) {
+  opacity: var(--sub-op);
+  font-weight: 400;
+  font-size: 0.92em;
+}
+.bilingual { margin-bottom: 0.65rem; }
+.bilingual:last-child { margin-bottom: 0; }
+.bilingual p { margin-bottom: 0.35rem; }
+.bilingual p:last-child { margin-bottom: 0; }
+
+.hero {
+  min-height: 52vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 0 2.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent),
+    linear-gradient(180deg, var(--surface2) 0%, var(--bg) 100%);
+}
+.hero .hero-line1 { font-size: clamp(1.65rem, 4.2vw, 2.25rem); font-weight: 700; letter-spacing: -0.02em; }
+.hero .hero-line2 { font-size: clamp(1.15rem, 2.8vw, 1.45rem); font-weight: 600; margin-top: 0.5rem; }
+.hero .hero-en { margin-top: 0.15rem; }
+.hero .lead { margin: 1.1rem 0 1.5rem; max-width: 56ch; }
+.metrics { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.82rem;
+}
+.metric .metric-cn { color: var(--text); font-weight: 600; }
+.metric .metric-en { display: block; font-size: 0.78em; opacity: var(--sub-op); margin-top: 0.15rem; }
+
+hr { border-color: rgba(148, 163, 184, 0.4); }
+section { padding: 2.75rem 0; border-bottom: 1px solid rgba(148, 163, 184, 0.4); }
+section:last-of-type { border-bottom: none; }
+h2 { font-size: 1.42rem; margin-bottom: 0.3rem; letter-spacing: -0.02em; font-weight: 700; }
+.sec-en { margin-bottom: 1.1rem; }
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 960px) { .grid2 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.15rem;
+}
+.card h3 { font-size: 1rem; margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.badge {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.badge-before { background: rgba(251, 113, 133, 0.15); color: #fda4af; border: 1px solid rgba(251, 113, 133, 0.35); }
+.badge-after { background: rgba(52, 211, 153, 0.12); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.35); }
+ul.tight { margin-left: 1.1rem; font-size: 0.92rem; }
+ul.tight li { margin-bottom: 0.55rem; }
+ul.tight li :lang(en) { opacity: var(--sub-op); }
+
+.layer-flow { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.25rem 0; }
+.layer { display: grid; grid-template-columns: 88px 1fr; gap: 0.75rem; align-items: stretch; }
+@media (max-width: 520px) { .layer { grid-template-columns: 1fr; } }
+.layer-id {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  text-align: center;
+}
+.layer-body {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+.layer-body strong { color: var(--text); }
+.arrow-down { text-align: center; color: var(--muted); font-size: 1.1rem; line-height: 0.5; }
+
+.tools-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+@media (max-width: 960px) { .tools-row { grid-template-columns: 1fr; } }
+.tool {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem;
+  font-size: 0.88rem;
+}
+.tool .name { font-weight: 700; margin-bottom: 0.35rem; }
+.tool .hint-en { opacity: var(--sub-op); font-size: 0.82rem; margin-top: 0.35rem; }
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.85rem;
+}
+.research-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.research-card h3 { font-size: 0.98rem; margin-bottom: 0.45rem; font-weight: 700; }
+.research-card .rec-box { margin-top: auto; padding-top: 0.65rem; border-top: 1px dashed var(--border); font-size: 0.82rem; color: var(--warn); }
+.research-card .rec-box p:first-child::before { content: "→ "; color: var(--accent); }
+.research-card .rec-box .rec-en { font-size: 0.78rem; margin-top: 0.3rem; opacity: var(--sub-op); }
+
+.tree {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  background: #0c1222;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+.tree .dir { color: var(--accent); }
+.tree .note { opacity: 0.88; }
+
+.checks {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+.check {
+  font-size: 0.8rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.55rem;
+}
+.check span { color: var(--ok); margin-right: 0.25rem; }
+.check .check-en { display: block; font-size: 0.85em; opacity: var(--sub-op); margin-top: 0.2rem; }
+
+.pr-stack { font-size: 0.85rem; margin-bottom: 1rem; padding: 0.55rem 0.85rem; background: var(--accent-dim); border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.25); }
+.pr-grid { display: flex; flex-direction: column; gap: 0.85rem; }
+.pr {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+}
+@media (max-width: 560px) { .pr { grid-template-columns: 1fr; } }
+.pr .lines {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  background: var(--surface2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.pr h3 { font-size: 1rem; margin-bottom: 0.35rem; font-weight: 700; }
+.pr .btn {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--accent);
+  color: #0f172a;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.pr .btn:hover { filter: brightness(1.08); text-decoration: none; }
+
+details.acc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  padding: 0.65rem 1rem;
+}
+details.acc summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+details.acc summary::-webkit-details-marker { display: none; }
+details.acc summary::after { content: "+"; color: var(--accent); font-weight: 400; flex-shrink: 0; }
+details.acc[open] summary::after { content: "−"; }
+details.acc .sum-en { display: block; width: 100%; font-size: 0.85em; opacity: var(--sub-op); font-weight: 400; margin-top: 0.25rem; }
+details.acc .body { margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px solid var(--border); font-size: 0.9rem; }
+
+.exec-summary {
+  background: linear-gradient(135deg, var(--accent-dim), var(--surface2));
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  margin-top: 0.5rem;
+}
+.exec-summary ul { margin: 0; padding-left: 1.15rem; font-size: 0.92rem; }
+.exec-summary li { margin-bottom: 0.65rem; }
+.exec-summary li:last-child { margin-bottom: 0; }
+.exec-summary strong { color: var(--text); }
+
+.biz-list { margin: 0.65rem 0 0 1.1rem; font-size: 0.92rem; }
+.biz-list li { margin-bottom: 0.55rem; }
+.biz-list strong { color: var(--text); }
+
+.refs-ol { margin: 0.75rem 0 0; padding-left: 1.35rem; font-size: 0.84rem; }
+.refs-ol li { margin-bottom: 0.65rem; }
+.refs-ol a { word-break: break-word; }
+.refs-ol .ref-en { display: block; opacity: var(--sub-op); margin-top: 0.2rem; font-size: 0.95em; }
+
+footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.4);
+  font-size: 0.85rem;
+}
+footer .foot-en { opacity: var(--sub-op); margin-top: 0.35rem; }
+
+.reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: inherit;
+}
+
+@media print {
+  body { background: #fff; color: #111; }
+  .hero { background: #f8fafc; min-height: auto; }
+  :root { --bg: #fff; --surface: #f1f5f9; --text: #0f172a; --muted: #475569; --border: #cbd5e1; }
+  a { color: #0369a1; }
+  .metric, .card, .research-card, .pr, details.acc, .tree { break-inside: avoid; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero reveal">
+    <div class="hero-title">
+      <p lang="zh-CN" class="hero-line1">知识层</p>
+      <p lang="en" class="sub-en hero-en">Knowledge Layer</p>
+      <p lang="zh-CN" class="hero-line2">团队 Agent 知识层</p>
+      <p lang="en" class="sub-en hero-en">Team Agent Knowledge Layer</p>
+    </div>
+    <div class="lead">
+      <div class="bilingual">
+        <p lang="zh-CN">可移植的 domain pack 与入口文件，供各工具发现；共享方法论，避免在仓库根重复冗长规则。</p>
+        <p lang="en">Portable domain packs and entry files agents can discover—shared methodology without duplicating long rules at the repo root.</p>
+      </div>
+    </div>
+    <div class="metrics">
+      <span class="metric"><span class="metric-cn" lang="zh-CN">5 个调研方向</span><span class="metric-en" lang="en">5 research areas</span></span>
+      <span class="metric"><span class="metric-cn" lang="zh-CN">23 条已索引链接</span><span class="metric-en" lang="en">23 indexed URLs</span></span>
+      <span class="metric"><span class="metric-cn" lang="zh-CN">17 个上游示例</span><span class="metric-en" lang="en">17 upstream skills</span></span>
+      <span class="metric"><span class="metric-cn" lang="zh-CN">3 个堆叠 PR</span><span class="metric-en" lang="en">3 stacked PRs</span></span>
+    </div>
+  </header>
+
+  <section class="reveal" id="exec-summary">
+    <h2 lang="zh-CN">执行摘要</h2>
+    <p lang="en" class="sub-en sec-en">Executive Summary</p>
+    <div class="exec-summary">
+      <ul>
+        <li>
+          <strong lang="zh-CN">问题</strong> / <span lang="en" class="sub-en">Problem</span>
+          <div class="bilingual"><p lang="zh-CN">知识分散在个人配置，缺少可共享的团队基线。</p><p lang="en">Agent knowledge (rules, skills, methodology) is scattered across personal setups—no portable, sharable team baseline.</p></div>
+        </li>
+        <li>
+          <strong lang="zh-CN">方案</strong> / <span lang="en" class="sub-en">Proposal</span>
+          <div class="bilingual"><p lang="zh-CN">三层渐进披露、跨工具兼容与自动化校验（遵循 <a href="https://agentskills.io/specification">agentskills.io</a> 开放规范）。</p><p lang="en">A structured Knowledge Layer following the agentskills.io open specification: three-layer progressive disclosure, cross-tool compatibility (Cursor, Codex, Claude Code), automated validation.</p></div>
+        </li>
+        <li>
+          <strong lang="zh-CN">请求</strong> / <span lang="en" class="sub-en">Ask</span>
+          <div class="bilingual"><p lang="zh-CN">审阅三个堆叠 PR，MVP 分三次合并（总计约 1200 行，拆分以便聚焦审查）。</p><p lang="en">Review 3 stacked PRs (~1200 lines total, split for focused review). MVP lands in 3 merges.</p></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="reveal" id="problem">
+    <h2 lang="zh-CN">问题与对策</h2>
+    <p lang="en" class="sub-en sec-en">Problem → Solution</p>
+    <div class="grid2">
+      <div class="card">
+        <h3><span class="badge badge-before" lang="en">Before</span> <span lang="zh-CN">之前</span></h3>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">规则与指引分散，难以形成统一的团队基线。</p><p lang="en">Rules and guidance scattered; hard to share a single team baseline.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">各工具缺少统一的 progressive disclosure 形态。</p><p lang="en">No common progressive-disclosure shape across tools.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">个人或机器专属笔记难以作为可移植包流转。</p><p lang="en">Personal or machine-specific notes do not travel as portable packs.</p></div></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="badge badge-after" lang="en">After</span> <span lang="zh-CN">之后</span></h3>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">在工作区根目录下集中 <strong>domain pack</strong>，并配薄层跨工具索引。</p><p lang="en">Structured <strong>domain packs</strong> under one workspace root with a thin cross-tool index.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN"><strong>L1→L2→L3</strong> 加载：目录提示、<code>SKILL.md</code> 路由、按需加载 <code>references/</code>。</p><p lang="en"><strong>L1→L2→L3</strong> loading: catalog hint, <code>SKILL.md</code> router, <code>references/</code> on demand.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN"><strong>跨工具</strong> 入口：同一套包适配 Cursor、Codex、Claude Code 约定。</p><p lang="en"><strong>Cross-tool</strong> entry: same packs for Cursor, Codex, and Claude Code conventions.</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" id="business-value">
+    <h2 lang="zh-CN">业务价值</h2>
+    <p lang="en" class="sub-en sec-en">Why It Matters</p>
+    <ul class="biz-list">
+      <li>
+        <strong lang="zh-CN">更快上手</strong> <span lang="en" class="sub-en">· Faster onboarding</span>
+        <div class="bilingual"><p lang="zh-CN">新人获得结构化方法，而非依赖口耳相传。</p><p lang="en">New team members get structured methodology instead of tribal knowledge.</p></div>
+      </li>
+      <li>
+        <strong lang="zh-CN">质量护栏</strong> <span lang="en" class="sub-en">· Quality guardrails</span>
+        <div class="bilingual"><p lang="zh-CN">合并前拦截密钥、断链与规则膨胀。</p><p lang="en">Automated checks catch secrets, broken references, and rule bloat before merge.</p></div>
+      </li>
+      <li>
+        <strong lang="zh-CN">跨工具覆盖</strong> <span lang="en" class="sub-en">· Cross-tool reach</span>
+        <div class="bilingual"><p lang="zh-CN">同一套包在多工具复用，避免重复维护。</p><p lang="en">Same packs work for Cursor IDE, Codex CLI, and Claude Code without duplication.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="reveal" id="architecture">
+    <h2 lang="zh-CN">架构概览</h2>
+    <p lang="en" class="sub-en sec-en">Architecture Overview</p>
+    <div class="layer-flow">
+      <div class="layer">
+        <div class="layer-id" lang="en">L1</div>
+        <div class="layer-body">
+          <div class="bilingual">
+            <p lang="zh-CN"><strong>目录 / 发现</strong> — <code>SKILL.md</code> frontmatter 中的 <code>description</code>（约 100 tokens）。稳定路由面：做什么 / 何时 / 不做什么。</p>
+            <p lang="en"><strong>Catalog / discovery</strong> — <code>description</code> in <code>SKILL.md</code> frontmatter (~100 tokens). Stable routing surface: what/when/not.</p>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-down" aria-hidden="true">↓</div>
+      <div class="layer">
+        <div class="layer-id" lang="en">L2</div>
+        <div class="layer-body">
+          <div class="bilingual">
+            <p lang="zh-CN"><strong>包主体</strong> — <code>SKILL.md</code> 正文（&lt;5k tokens / &lt;500 行）：安全、默认值、指针——非长篇教程。</p>
+            <p lang="en"><strong>Pack body</strong> — <code>SKILL.md</code> content (&lt;5k tokens / &lt;500 lines): safety, defaults, pointers—not long tutorials.</p>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-down" aria-hidden="true">↓</div>
+      <div class="layer">
+        <div class="layer-id" lang="en">L3</div>
+        <div class="layer-body">
+          <div class="bilingual">
+            <p lang="zh-CN"><strong>深度参考</strong> — 仅当路由指向时加载 <code>references/*.md</code>（建议每篇 &lt;300 行）。</p>
+            <p lang="en"><strong>Deep references</strong> — <code>references/*.md</code> loaded only when the router points there (guideline &lt;300 lines each).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bilingual" style="margin:0.75rem 0 0.35rem">
+      <p lang="zh-CN"><strong>跨工具兼容</strong> · 跨工具入口</p>
+      <p lang="en">Cross-tool compatibility · Cross-tool entry points</p>
+    </div>
+    <div class="tools-row">
+      <div class="tool">
+        <div class="name" lang="en">Cursor</div>
+        <p lang="zh-CN">规则优先级：<strong>Team → Project → User</strong>（官方文档）。</p>
+        <p lang="en" class="hint-en">Rules precedence: <strong>Team → Project → User</strong> (official docs).</p>
+      </div>
+      <div class="tool">
+        <div class="name" lang="en">Codex</div>
+        <p lang="zh-CN"><code>AGENTS.md</code> 合并默认上限 <strong>32 KiB</strong>；根到叶，后者覆盖前者。</p>
+        <p lang="en" class="hint-en"><code>AGENTS.md</code> merged default <strong>32 KiB</strong> ceiling; root→leaf, later overrides.</p>
+      </div>
+      <div class="tool">
+        <div class="name" lang="en">Claude Code</div>
+        <p lang="zh-CN"><code>CLAUDE.md</code> 指引 &lt;200 行；支持 <code>@import</code> 与嵌套文件。</p>
+        <p lang="en" class="hint-en"><code>CLAUDE.md</code> guidance <strong>&lt;200 lines</strong>; supports <code>@import</code> and nested files.</p>
+      </div>
+    </div>
+    <div class="bilingual" style="margin-top:0.85rem;font-size:0.88rem">
+      <p lang="zh-CN">Cursor CLI 不加载 IDE 插件——无头自动化场景勿假设仅插件流程。</p>
+      <p lang="en">Cursor CLI does not load IDE plugins—do not assume plugin-only flows in headless automation.</p>
+    </div>
+  </section>
+
+  <section class="reveal" id="research">
+    <h2 lang="zh-CN">调研摘要</h2>
+    <p lang="en" class="sub-en sec-en">Research Highlights</p>
+    <div class="grid3">
+      <div class="research-card">
+        <h3 lang="zh-CN">Agent Skills 规范</h3>
+        <p lang="en" class="sub-en" style="margin-bottom:0.5rem">Agent Skills Spec</p>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">三层：catalog → <code>SKILL.md</code> → <code>references/</code>（agentskills.io 模型）。</p><p lang="en">Three layers: catalog → <code>SKILL.md</code> → <code>references/</code> (agentskills.io model).</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN"><code>skills-ref validate</code> 拒绝未知顶层键——扩展应放在 <code>metadata</code>。</p><p lang="en"><code>skills-ref validate</code> rejects unknown top-level keys—extensions belong in <code>metadata</code>.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">anthropics/skills 提供 17 个示例；过大的 <code>SKILL.md</code> 是反模式信号。</p><p lang="en">17 example skills in anthropics/skills; oversized <code>SKILL.md</code> is an anti-pattern signal.</p></div></li>
+        </ul>
+        <div class="rec-box"><p lang="zh-CN">将 <code>SKILL.md</code> 作为路由；深度放在 references 与 scripts。</p><p lang="en" class="rec-en">Keep SKILL.md a router; depth in references + scripts.</p></div>
+      </div>
+      <div class="research-card">
+        <h3 lang="zh-CN">跨工具兼容</h3>
+        <p lang="en" class="sub-en" style="margin-bottom:0.5rem">Cross-Tool Compat</p>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">薄根索引 + domain 正文，以适配 Codex 合并上限。</p><p lang="en">Thin root index + domain bodies to respect Codex merge limits.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">精简 <code>CLAUDE.md</code>，在合适处委托给共享索引。</p><p lang="en">Thin <code>CLAUDE.md</code> that delegates to shared index where appropriate.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">Team marketplace 属于组织级能力——并非人人具备。</p><p lang="en">Team marketplaces are org capabilities—not assumed for everyone.</p></div></li>
+        </ul>
+        <div class="rec-box"><p lang="zh-CN">薄 AGENTS + 各 pack 的 SKILL 正文；避免在根目录重复方法论。</p><p lang="en" class="rec-en">Thin AGENTS + pack SKILL bodies; avoid duplicating methodology at root.</p></div>
+      </div>
+      <div class="research-card">
+        <h3 lang="zh-CN">安全与合规</h3>
+        <p lang="en" class="sub-en" style="margin-bottom:0.5rem">Security &amp; Safety</p>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">密钥/路径泄露是流程分析中的首要风险。</p><p lang="en">Secret/path leakage is a top risk in flow analysis.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">不可妥协的策略必须落在 L2，而非仅 L3。</p><p lang="en">Non-negotiable policies must live in <strong>L2</strong>, not only L3.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">官方反模式：菜单式选项、陷阱仅写在参考里、万能技能包。</p><p lang="en">Official anti-patterns: menu-style options, gotchas only in reference, kitchen-sink skills.</p></div></li>
+        </ul>
+        <div class="rec-box"><p lang="zh-CN">在 L2 使用阻塞式清单；规划 gitleaks/trufflehog 与 CI 加固。</p><p lang="en" class="rec-en">Use blocking checklists in L2; plan gitleaks/trufflehog with CI hardening.</p></div>
+      </div>
+      <div class="research-card">
+        <h3 lang="zh-CN">治理</h3>
+        <p lang="en" class="sub-en" style="margin-bottom:0.5rem">Governance</p>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">流水线：skills-ref → 密钥扫描 → 交叉引用 → 规则预算（分阶段）。</p><p lang="en">Pipeline pattern: skills-ref → secret scan → cross-ref → rule budget (staged).</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">MVP：CONTRIBUTING + verify 脚本；加固：自动化密钥扫描。</p><p lang="en">MVP: CONTRIBUTING + verify script; hardening: automated secret scanning.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">生命周期：MVP → 加固 → 长期 schema / 多包冲突管理。</p><p lang="en">Lifecycle: MVP → hardening → long-term schema / multi-pack conflicts.</p></div></li>
+        </ul>
+        <div class="rec-box"><p lang="zh-CN">尽早落地 CONTRIBUTING 与 PR 清单，明确安全与归属。</p><p lang="en" class="rec-en">Land CONTRIBUTING + PR checklist with security and ownership early.</p></div>
+      </div>
+      <div class="research-card">
+        <h3 lang="zh-CN">模式与反模式</h3>
+        <p lang="en" class="sub-en" style="margin-bottom:0.5rem">Patterns &amp; Anti-patterns</p>
+        <ul class="tight">
+          <li><div class="bilingual"><p lang="zh-CN">建议流程：开始前 → 默认值 → 步骤 → 何时加载 references。</p><p lang="en">Suggested flow: Before you start → Defaults → Procedure → When to load references.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">强模式：「Use when…」、速查表、确定性脚本。</p><p lang="en">Strong patterns: “Use when…”, quick-reference tables, deterministic scripts.</p></div></li>
+          <li><div class="bilingual"><p lang="zh-CN">避免规则膨胀与非确定性披露——损害采纳。</p><p lang="en">Avoid rule bloat and non-deterministic disclosure—hurts adoption.</p></div></li>
+        </ul>
+        <div class="rec-box"><p lang="zh-CN">统一 <code>references/</code> 命名；保持 L2 可扫读。</p><p lang="en" class="rec-en">Enforce consistent <code>references/</code> naming; keep L2 skimmable.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" id="built">
+    <h2 lang="zh-CN">我们做了什么</h2>
+    <p lang="en" class="sub-en sec-en">What We Built</p>
+    <div class="tree">
+<span class="dir">wiki/</span>  <span class="note" lang="zh-CN">（在 IDE 中以此目录为工作区根目录打开）</span> <span class="note" lang="en">· open as IDE workspace root</span>
+├── <strong>AGENTS.md</strong> <span class="note" lang="zh-CN">— 25 行 · 跨工具索引</span> <span class="note" lang="en">· 25 lines · cross-tool index</span>
+├── <strong>README.md</strong> <span class="note" lang="zh-CN">— 42 行 · 快速开始与范围</span> <span class="note" lang="en">· quick start &amp; scope</span>
+├── <strong>CONTRIBUTING.md</strong> <span class="note" lang="zh-CN">— 60 行 · 清单与合并顺序</span> <span class="note" lang="en">· checklist &amp; merge order</span>
+├── <strong>CLAUDE.md</strong> <span class="note" lang="zh-CN">— 薄引导 → @AGENTS.md</span> <span class="note" lang="en">· thin bootstrap</span>
+├── <span class="dir">agent-general/</span>
+│   ├── <strong>SKILL.md</strong> <span class="note" lang="zh-CN">— 84 行 · 方法论包路由</span> <span class="note" lang="en">· methodology pack router</span>
+│   ├── <span class="dir">references/</span> <span class="note" lang="zh-CN">（design-research、layering、security 等）</span>
+│   └── <span class="dir">rules/</span> <span class="note" lang="zh-CN">· 可选 .mdc 片段</span> <span class="note" lang="en">· optional .mdc snippets</span>
+├── <span class="dir">docs/</span>ci-validation.md <span class="note" lang="zh-CN">— 68 行 · 流水线阶段</span> <span class="note" lang="en">· pipeline stages</span>
+├── <span class="dir">scripts/</span>verify-public-pack.sh <span class="note" lang="zh-CN">— 506 行 · 六项检查</span> <span class="note" lang="en">· six checks</span>
+└── <span class="dir">templates/</span> <span class="note" lang="zh-CN">· SKILL 与 domain rule 脚手架</span> <span class="note" lang="en">· SKILL + domain-rule scaffolds</span>
+    </div>
+    <div class="bilingual" style="margin:1rem 0 0.35rem">
+      <p lang="zh-CN"><code>verify-public-pack.sh</code> — 六项自动化检查</p>
+      <p lang="en"><code>verify-public-pack.sh</code> — six automated checks</p>
+    </div>
+    <div class="bilingual" style="font-size:0.85rem;margin-bottom:0.5rem">
+      <p lang="zh-CN">六项检查与 <code>docs/ci-validation.md</code> Stage A 一致。</p>
+      <p lang="en">Six checks match <code>docs/ci-validation.md</code> Stage A.</p>
+    </div>
+    <div class="checks">
+      <div class="check"><span>1</span> <span lang="zh-CN">SKILL frontmatter 校验</span><span class="check-en" lang="en">SKILL frontmatter validation</span></div>
+      <div class="check"><span>2</span> <span lang="zh-CN">Denylist 扫描</span><span class="check-en" lang="en">Denylist scan</span></div>
+      <div class="check"><span>3</span> <span lang="zh-CN">密钥面扫描</span><span class="check-en" lang="en">Secret surface scan</span></div>
+      <div class="check"><span>4</span> <span lang="zh-CN">可解析交叉引用</span><span class="check-en" lang="en">Resolvable cross-references</span></div>
+      <div class="check"><span>5</span> <span lang="zh-CN">引用 references 存在且非空</span><span class="check-en" lang="en">Cited references exist (non-empty)</span></div>
+      <div class="check"><span>6</span> <span lang="zh-CN">AGENTS.md 域表一致性</span><span class="check-en" lang="en">AGENTS.md domain table consistency</span></div>
+    </div>
+    <div class="bilingual" style="margin-top:1.1rem;font-size:0.88rem">
+      <p lang="zh-CN"><strong>PR 拆分：</strong> (1) 核心布局 + 首个 pack → (2) bash verify 脚本 + 检查 → (3) 治理文档 + 模板 + 精简 Claude 入口——堆叠合并保持审查聚焦。</p>
+      <p lang="en"><strong>PR split:</strong> (1) core layout + first pack → (2) bash verify script + checks → (3) governance docs + templates + thin Claude entry—stacked merge keeps reviews focused.</p>
+    </div>
+  </section>
+
+  <section class="reveal" id="prs">
+    <h2 lang="zh-CN">PR 审阅路线图</h2>
+    <p lang="en" class="sub-en sec-en">PR Review Roadmap</p>
+    <div class="pr-stack">
+      <div class="bilingual">
+        <p lang="zh-CN"><strong>合并顺序：</strong> #1 → #2 → #3（堆叠 · 依赖上游）</p>
+        <p lang="en"><strong>Merge order:</strong> #1 → #2 → #3 (stacked · depends on upstream)</p>
+      </div>
+    </div>
+    <div class="pr-grid">
+      <div class="pr">
+        <div>
+          <h3 lang="zh-CN">PR #1 — 核心结构</h3>
+          <p lang="en" class="sub-en">PR #1 — Core structure</p>
+          <ul class="tight">
+            <li><div class="bilingual"><p lang="zh-CN">工作区布局：<code>AGENTS.md</code>、<code>agent-general/</code>、pack 约定。</p><p lang="en">Workspace layout: <code>AGENTS.md</code>, <code>agent-general/</code>, pack conventions.</p></div></li>
+            <li><div class="bilingual"><p lang="zh-CN">首个 domain pack + 对齐 L1–L3 的 <code>references/</code> 骨架。</p><p lang="en">First domain pack + <code>references/</code> skeleton aligned to L1–L3.</p></div></li>
+            <li><div class="bilingual"><p lang="zh-CN">审查：AGENTS 中的表、pack 命名与 <code>SKILL.md</code> 的 <code>name</code> 字段一致。</p><p lang="en">Review: table in AGENTS, pack naming = <code>SKILL.md</code> <code>name</code> field.</p></div></li>
+          </ul>
+          <a class="btn" href="https://github.com/Tranxmart/grocery/pull/1" lang="en">Open PR #1</a>
+        </div>
+        <div class="lines"><span lang="zh-CN">482 行</span> / <span lang="en">482 lines</span></div>
+      </div>
+      <div class="pr">
+        <div>
+          <h3 lang="zh-CN">PR #2 — Verify 脚本</h3>
+          <p lang="en" class="sub-en">PR #2 — Verify script</p>
+          <ul class="tight">
+            <li><div class="bilingual"><p lang="zh-CN">Bash + Python 结构检查；可选 <code>rg</code> 加速 denylist。</p><p lang="en">Bash + Python structural checks; optional <code>rg</code> for denylist speed.</p></div></li>
+            <li><div class="bilingual"><p lang="zh-CN">与文档中的 CI Stage A 意图对齐本地提 PR 前流程。</p><p lang="en">Aligns local pre-PR flow with documented CI Stage A intent.</p></div></li>
+            <li><div class="bilingual"><p lang="zh-CN">审查：frontmatter 解析边界、引用的 MVP 参考列表。</p><p lang="en">Review: edge cases for frontmatter parsing, cited MVP reference list.</p></div></li>
+          </ul>
+          <a class="btn" href="https://github.com/Tranxmart/grocery/pull/2" lang="en">Open PR #2</a>
+        </div>
+        <div class="lines"><span lang="zh-CN">512 行</span> / <span lang="en">512 lines</span></div>
+      </div>
+      <div class="pr">
+        <div>
+          <h3 lang="zh-CN">PR #3 — 治理与模板</h3>
+          <p lang="en" class="sub-en">PR #3 — Governance + templates</p>
+          <ul class="tight">
+            <li><div class="bilingual"><p lang="zh-CN"><code>CONTRIBUTING.md</code>、PR 清单、规则预算目标、新建 pack 配方。</p><p lang="en"><code>CONTRIBUTING.md</code>, PR checklist, rule budget targets, new-pack recipe.</p></div></li>
+            <li><div class="bilingual"><p lang="zh-CN">模板 + <code>docs/ci-validation.md</code> + 精简 <code>CLAUDE.md</code>。</p><p lang="en">Templates + <code>docs/ci-validation.md</code> + thin <code>CLAUDE.md</code>.</p></div></li>
+            <li><div class="bilingual"><p lang="zh-CN">审查：无密钥/路径；未来 pack 的模板复制路径。</p><p lang="en">Review: no secrets/paths; template copy path for future packs.</p></div></li>
+          </ul>
+          <a class="btn" href="https://github.com/Tranxmart/grocery/pull/3" lang="en">Open PR #3</a>
+        </div>
+        <div class="lines"><span lang="zh-CN">397 行</span> / <span lang="en">397 lines</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" id="decisions">
+    <h2 lang="zh-CN">关键设计决策</h2>
+    <p lang="en" class="sub-en sec-en">Key Design Decisions</p>
+    <details class="acc">
+      <summary lang="zh-CN">渐进披露：L2 承载不可妥协的安全要点<span class="sum-en" lang="en">Progressive disclosure — L2 holds non-negotiable safety</span></summary>
+      <div class="body">
+        <div class="bilingual">
+          <p lang="zh-CN">安全策略必须在 <code>SKILL.md</code> 正文（L2）可见，而非仅存在于 deep references——使用清单与校验循环。任务匹配触发条件后，再由 L3 展开深度。</p>
+          <p lang="en">Safety policies must be visible in the <code>SKILL.md</code> body (L2), not only in deep references—use checklists and validation loops. L3 is for depth once the task matches a trigger.</p>
+        </div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary lang="zh-CN">自定义键仅走 metadata，保持校验器兼容<span class="sum-en" lang="en">Metadata-only extensions for custom keys</span></summary>
+      <div class="body">
+        <div class="bilingual">
+          <p lang="zh-CN"><code>skills-ref validate</code> 拒绝未知顶层 YAML 键；团队扩展应放在 <code>metadata</code>，使 CI 与上游 schema 行为一致。</p>
+          <p lang="en"><code>skills-ref validate</code> rejects unknown top-level YAML keys; team extensions belong under <code>metadata</code> so CI stays aligned with upstream schema behavior.</p>
+        </div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary lang="zh-CN">规则合并优先级（Cursor 对齐）<span class="sum-en" lang="en">Team → Project → User merge order</span></summary>
+      <div class="body">
+        <div class="bilingual">
+          <p lang="zh-CN">规则冲突应视为 bug。个人覆盖仅影响非规范性偏好——不得削弱团队强制规则。在 CONTRIBUTING 中说明并链接 Cursor rules 文档。</p>
+          <p lang="en">When rules conflict, treat it as a bug. Personal overlays should only affect non-normative preferences—never weaken team-enforced rules. Documented in CONTRIBUTING with link to Cursor rules docs.</p>
+        </div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary lang="zh-CN">Bash 校验脚本，工具链最小化<span class="sum-en" lang="en">Bash-first verify script (minimal toolchain)</span></summary>
+      <div class="body">
+        <div class="bilingual">
+          <p lang="zh-CN">Stage A 使用 <code>./scripts/verify-public-pack.sh</code>，依赖 bash、Python 3 与 grep——可选 ripgrep。在轻依赖下对齐本地与未来 CI；<code>npx skills-ref validate</code> 在具备 Node 时作为独立 Stage B。</p>
+          <p lang="en">Stage A uses <code>./scripts/verify-public-pack.sh</code> with bash, Python 3, and grep—optional ripgrep. Keeps local and future CI behavior aligned without heavy deps; <code>npx skills-ref validate</code> is a separate Stage B when Node is available.</p>
+        </div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary lang="zh-CN">分流入口：AGENTS 与 CLAUDE<span class="sum-en" lang="en">Separate <code>AGENTS.md</code> and <code>CLAUDE.md</code> entry points</span></summary>
+      <div class="body">
+        <div class="bilingual">
+          <p lang="zh-CN"><code>AGENTS.md</code> 承载单一跨工具索引；各工具引导保持精简。<code>CLAUDE.md</code> 通过 <code>@AGENTS.md</code> 委托，使 Claude Code 路由到同一套包而不重复冗长指引。</p>
+          <p lang="en">Single cross-tool index in <code>AGENTS.md</code>; tool-specific bootstraps stay thin. <code>CLAUDE.md</code> delegates via <code>@AGENTS.md</code> so Claude Code routes to the same packs without duplicating long guidance.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section class="reveal" id="references">
+    <h2 lang="zh-CN">参考标准</h2>
+    <p lang="en" class="sub-en sec-en">References &amp; Standards</p>
+    <p lang="zh-CN" style="font-size:0.9rem;margin-bottom:0.5rem">外部规范与行业实践（编号便于引用）</p>
+    <p lang="en" class="sub-en" style="margin-bottom:0.75rem">External specs and industry practice (numbered for citation)</p>
+    <ol class="refs-ol">
+      <li lang="zh-CN"><a href="https://agentskills.io/specification">agentskills.io Specification</a> — agent skills 开放标准。<span class="ref-en" lang="en">Open standard for agent skills.</span></li>
+      <li lang="zh-CN"><a href="https://adr.github.io/">Architecture Decision Records</a> — ADR 社区枢纽。<span class="ref-en" lang="en">ADR community hub.</span></li>
+      <li lang="zh-CN"><a href="https://github.com/anthropics/skills">Anthropic Skills Repository</a> — 17 个示例 skills。<span class="ref-en" lang="en">17 example skills.</span></li>
+      <li lang="zh-CN"><a href="https://cursor.com/docs/context/rules">Cursor Rules Documentation</a> — Team → Project → User 优先级。<span class="ref-en" lang="en">Team → Project → User precedence.</span></li>
+      <li lang="zh-CN"><a href="https://developers.openai.com/codex/guides/agents-md/">Codex AGENTS.md Guide</a> — 32 KiB 合并上限。<span class="ref-en" lang="en">32 KiB merge limit.</span></li>
+      <li lang="zh-CN"><a href="https://engineering.atspotify.com/2022/12/shipping-spotifys-culture-5-plugins-and-4-principles-for-supercharging-developer-experience-at-scale">Spotify Developer Experience</a> — 规模化开发者平台思维。<span class="ref-en" lang="en">Developer platform thinking at scale.</span></li>
+    </ol>
+  </section>
+
+  <footer class="reveal">
+    <p><a href="../index.html" lang="zh-CN">← Tranxmart Grocery 工程枢纽</a></p>
+    <p lang="en" class="foot-en">← Tranxmart Grocery Engineering Hub</p>
+    <p lang="zh-CN" style="margin-top:0.5rem">更新日期：2026-03-20</p>
+    <p lang="en" class="foot-en">Last updated: 2026-03-20</p>
+  </footer>
+</div>
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
