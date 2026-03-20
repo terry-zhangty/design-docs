@@ -3,47 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tranxmart Design Docs</title>
+<title>Tranxmart Grocery — Engineering Knowledge & Design Hub</title>
 <style>
-  :root { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; }
-  .container { max-width: 800px; margin: 0 auto; }
-  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-  .subtitle { color: var(--muted); margin-bottom: 2rem; }
-  .doc-list { list-style: none; }
-  .doc-list li { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.75rem; }
-  .doc-list a { display: block; padding: 1rem 1.25rem; color: var(--accent); text-decoration: none; font-weight: 500; }
-  .doc-list a:hover { background: rgba(56,189,248,0.05); }
-  .doc-list .desc { color: var(--muted); font-size: 0.85rem; font-weight: 400; display: block; margin-top: 0.25rem; }
-  .footer { color: var(--muted); font-size: 0.8rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+:root{--bg:#0f172a;--surface:#1e293b;--surface2:#162032;--border:#334155;--text:#e2e8f0;--muted:#94a3b8;--accent:#38bdf8;--accent-dim:rgba(56,189,248,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;min-height:100vh}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:720px;margin:0 auto;padding:2.5rem 1.25rem 3rem}
+.hero{padding:1rem 0 2rem;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 80% 50% at 50% -30%,rgba(56,189,248,.12),transparent),linear-gradient(180deg,var(--surface2) 0%,var(--bg) 100%)}
+h1{font-size:clamp(1.5rem,4vw,2rem);font-weight:700;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:1rem;max-width:58ch;margin:.6rem 0 0}
+.sub-cn{display:block;margin-top:.45rem;font-size:.88rem;opacity:.92}
+.intro{margin:1.75rem 0 0;font-size:.95rem;color:var(--text);max-width:62ch}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.35rem 1.4rem;margin-top:2rem}
+.card h2{font-size:1.1rem;margin-bottom:.45rem}
+.card p.desc{color:var(--muted);font-size:.88rem;margin-bottom:1rem;line-height:1.5}
+.badges{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.1rem}
+.badge{font-size:.72rem;padding:.28rem .65rem;border-radius:999px;background:var(--accent-dim);border:1px solid rgba(56,189,248,.28);color:var(--muted)}
+.badge strong{color:var(--accent);font-weight:600}
+.cta{display:inline-block;background:var(--accent);color:#0f172a;font-weight:600;padding:.55rem 1.15rem;border-radius:8px;font-size:.9rem}
+.cta:hover{filter:brightness(1.06);text-decoration:none}
+footer{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted)}
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>Tranxmart Design Docs</h1>
-  <p class="subtitle">Technical design documents and implementation roadmaps</p>
-  <ul class="doc-list">
-    <li>
-      <a href="mock-control-cli/">
-        Mock Control CLI &mdash; Implementation Roadmap
-        <span class="desc">Two-phase plan for building a CLI tool to send MockControlTrigger commands (Feb 2026)</span>
-      </a>
-    </li>
-    <li>
-      <a href="knowledge-layer/">
-        Knowledge Layer &mdash; Team Agent Knowledge System
-        <span class="desc">Design presentation: progressive disclosure, cross-tool compatibility, governance &amp; CI (Mar 2026)</span>
-      </a>
-    </li>
-    <li>
-      <a href="contributor-profile/">
-        Contributor Profile &mdash; terry-zhangty
-        <span class="desc">CANbus &amp; DBW subsystem owner &middot; 55 merged PRs &middot; Oct 2025 &ndash; Mar 2026</span>
-      </a>
-    </li>
-  </ul>
-  <p class="footer">Generated for Tranxmart engineering team</p>
+<div class="wrap">
+  <header class="hero">
+    <h1>Tranxmart Grocery</h1>
+    <p class="sub">Engineering Knowledge & Design Hub <span class="sub-cn">工程知识与设计中心</span></p>
+    <p class="intro">This site is the design hub for Tranxmart&rsquo;s internal engineering tools and practices. It hosts architecture decisions, implementation roadmaps, and shared knowledge systems the team uses to ship safely and consistently. Content is written for asynchronous review by leads and engineers—clear structure first, detail on demand.</p>
+  </header>
+  <article class="card">
+    <h2>Knowledge Layer <span style="font-weight:400;color:var(--muted);font-size:.85rem;">知识层</span></h2>
+    <p class="desc">Structured agent knowledge packs (L1&ndash;L3), cross-tool entry files, governance, and a stacked PR plan—research-backed and ready for review.</p>
+    <div class="badges">
+      <span class="badge"><strong>5</strong> research areas</span>
+      <span class="badge"><strong>23</strong> references</span>
+      <span class="badge"><strong>3</strong> PRs</span>
+    </div>
+    <a class="cta" href="knowledge-layer/">Open presentation · 打开演示</a>
+  </article>
+  <footer>
+    <p>Tranxmart Grocery Engineering &middot; 2026</p>
+    <p style="margin-top:.4rem;"><a href="https://github.com/Tranxmart/grocery">github.com/Tranxmart/grocery</a></p>
+  </footer>
 </div>
 </body>
 </html>

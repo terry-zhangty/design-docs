@@ -291,6 +291,25 @@ details.acc .body { margin-top: 0.65rem; font-size: 0.9rem; color: var(--muted);
 .reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
 .reveal.visible { opacity: 1; transform: none; }
 
+/* Executive summary, business value, references */
+.exec-summary {
+  background: linear-gradient(135deg, var(--accent-dim), var(--surface2));
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  margin-top: 0.5rem;
+}
+.exec-summary ul { margin: 0; padding-left: 1.15rem; color: var(--muted); font-size: 0.92rem; }
+.exec-summary li { margin-bottom: 0.55rem; }
+.exec-summary li:last-child { margin-bottom: 0; }
+.exec-summary strong { color: var(--text); }
+.biz-list { margin: 0.65rem 0 0 1.1rem; color: var(--muted); font-size: 0.92rem; }
+.biz-list li { margin-bottom: 0.45rem; }
+.biz-list strong { color: var(--text); }
+.refs-ol { margin: 0.75rem 0 0; padding-left: 1.35rem; color: var(--muted); font-size: 0.84rem; line-height: 1.55; }
+.refs-ol li { margin-bottom: 0.55rem; }
+.refs-ol a { word-break: break-word; }
+
 footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -323,6 +342,18 @@ footer {
     </div>
   </header>
 
+  <section class="reveal" id="exec-summary">
+    <h2>Executive Summary</h2>
+    <p class="sec-cn">执行摘要 · 决策与请求一览</p>
+    <div class="exec-summary">
+      <ul>
+        <li><strong>Problem · 问题</strong> — Agent knowledge (rules, skills, methodology) is scattered across personal setups—no portable, sharable team baseline. · 知识分散在个人配置，缺少可共享的团队基线。</li>
+        <li><strong>Proposal · 方案</strong> — A structured Knowledge Layer following the <a href="https://agentskills.io/specification">agentskills.io</a> open specification: three-layer progressive disclosure, cross-tool compatibility (Cursor, Codex, Claude Code), automated validation. · 三层渐进披露、跨工具兼容与自动化校验。</li>
+        <li><strong>Ask · 请求</strong> — Review 3 stacked PRs (~1200 lines total, split for focused review). MVP lands in 3 merges. · 审阅三个堆叠 PR，MVP 分三次合并。</li>
+      </ul>
+    </div>
+  </section>
+
   <section class="reveal" id="problem">
     <h2>Problem → Solution</h2>
     <p class="sec-cn">问题与对策 · 从分散到结构化</p>
@@ -344,6 +375,16 @@ footer {
         </ul>
       </div>
     </div>
+  </section>
+
+  <section class="reveal" id="business-value">
+    <h2>Why It Matters · 业务价值</h2>
+    <p class="sec-cn">速度、质量与范围</p>
+    <ul class="biz-list">
+      <li><strong>Faster onboarding · 更快上手</strong> — New team members get structured methodology instead of tribal knowledge. · 新人获得结构化方法，而非依赖口耳相传。</li>
+      <li><strong>Quality guardrails · 质量护栏</strong> — Automated checks catch secrets, broken references, and rule bloat before merge. · 合并前拦截密钥、断链与规则膨胀。</li>
+      <li><strong>Cross-tool reach · 跨工具覆盖</strong> — Same packs work for Cursor IDE, Codex CLI, and Claude Code without duplication. · 同一套包在多工具复用，避免重复维护。</li>
+    </ul>
   </section>
 
   <section class="reveal" id="architecture">
@@ -534,8 +575,21 @@ footer {
     </details>
   </section>
 
+  <section class="reveal" id="references">
+    <h2>References &amp; Standards · 参考标准</h2>
+    <p class="sec-cn">外部规范与行业实践（编号便于引用）</p>
+    <ol class="refs-ol">
+      <li><a href="https://agentskills.io/specification">agentskills.io Specification</a> — Open standard for agent skills.</li>
+      <li><a href="https://adr.github.io/">Architecture Decision Records</a> — ADR community hub.</li>
+      <li><a href="https://github.com/anthropics/skills">Anthropic Skills Repository</a> — 17 example skills.</li>
+      <li><a href="https://cursor.com/docs/context/rules">Cursor Rules Documentation</a> — Team → Project → User precedence.</li>
+      <li><a href="https://developers.openai.com/codex/guides/agents-md/">Codex AGENTS.md Guide</a> — 32 KiB merge limit.</li>
+      <li><a href="https://engineering.atspotify.com/2022/12/shipping-spotifys-culture-5-plugins-and-4-principles-for-supercharging-developer-experience-at-scale">Spotify Developer Experience</a> — Developer platform thinking at scale.</li>
+    </ol>
+  </section>
+
   <footer class="reveal">
-    <p><a href="../index.html">← Tranxmart Design Docs index</a></p>
+    <p><a href="../index.html">← Tranxmart Grocery Engineering Hub</a></p>
     <p style="margin-top:0.5rem;">Last updated · 更新日期: 2026-03-20</p>
   </footer>
 </div>
