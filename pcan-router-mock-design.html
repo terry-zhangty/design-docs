@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PCAN Router · Industry Mock Design Best Practices</title>
+    <!-- Copyright 2026 Tranxmart, Inc. All rights reserved. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-deep: #0a0e12;
+        --bg-panel: #12181f;
+        --bg-elevated: #1a222c;
+        --border: rgba(0, 230, 180, 0.12);
+        --border-strong: rgba(0, 230, 180, 0.35);
+        --text: #e6edf3;
+        --text-muted: #8b9aab;
+        --accent: #00e6b4;
+        --accent-dim: rgba(0, 230, 180, 0.15);
+        --warn: #ffb020;
+        --danger: #ff6b6b;
+        --grid-line: rgba(255, 255, 255, 0.04);
+        --radius: 10px;
+        --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+        --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+        --font-display: "Exo 2", var(--font-sans);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--text);
+        background: var(--bg-deep);
+        background-image: linear-gradient(
+            180deg,
+            rgba(0, 230, 180, 0.03) 0%,
+            transparent 40%
+          ),
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 31px,
+            var(--grid-line) 31px,
+            var(--grid-line) 32px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 31px,
+            var(--grid-line) 31px,
+            var(--grid-line) 32px
+          );
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s, color 0.2s;
+      }
+
+      a:hover {
+        border-bottom-color: var(--accent);
+      }
+
+      .shell {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 1.5rem 1.25rem 3rem;
+      }
+
+      .top-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 1.5rem;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-dim),
+          transparent 60%
+        );
+        border: 1px solid var(--border-strong);
+        display: grid;
+        place-items: center;
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: var(--accent);
+        letter-spacing: 0.05em;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .brand p {
+        margin: 0.15rem 0 0;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        font-size: 0.75rem;
+        font-family: var(--font-mono);
+        color: var(--text-muted);
+      }
+
+      .status-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.45;
+        }
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .tab-btn {
+        font-family: var(--font-display);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 0.55rem 1rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .tab-btn:hover {
+        color: var(--text);
+        background: var(--bg-elevated);
+      }
+
+      .tab-btn[aria-selected="true"] {
+        color: var(--bg-deep);
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(0, 230, 180, 0.25);
+      }
+
+      .panel {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.35rem 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .tab-panel {
+        display: none;
+        animation: fadeIn 0.35s ease;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tab-panel h2 {
+        margin: 0 0 1rem;
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .lead-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem 1.1rem;
+        transition: border-color 0.2s, transform 0.2s;
+      }
+
+      .card:hover {
+        border-color: var(--border-strong);
+        transform: translateY(-2px);
+      }
+
+      .card h3 {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .card p,
+      .card ul {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .card ul {
+        padding-left: 1.1rem;
+      }
+
+      .card li {
+        margin-bottom: 0.35rem;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        margin: 0.5rem 0 0;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+      }
+
+      thead {
+        background: rgba(0, 230, 180, 0.08);
+      }
+
+      th,
+      td {
+        padding: 0.75rem 0.9rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      th {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--accent);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        background: var(--accent-dim);
+        color: var(--accent);
+        margin-right: 0.35rem;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--bg-deep);
+        border-radius: 8px;
+        border: 1px dashed var(--border-strong);
+      }
+
+      .flow-step {
+        text-align: center;
+        padding: 0.65rem;
+        border-radius: 6px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        font-size: 0.82rem;
+      }
+
+      .flow-step strong {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--warn);
+        margin-bottom: 0.25rem;
+      }
+
+      .flow-arrow {
+        color: var(--accent);
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      @media (max-width: 720px) {
+        .flow {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-arrow {
+          transform: rotate(90deg);
+        }
+      }
+
+      .accordion {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 0.75rem;
+      }
+
+      .acc-item + .acc-item {
+        border-top: 1px solid var(--border);
+      }
+
+      .acc-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem 1rem;
+        background: var(--bg-elevated);
+        border: none;
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .acc-trigger:hover {
+        background: rgba(0, 230, 180, 0.06);
+      }
+
+      .acc-trigger .chev {
+        font-family: var(--font-mono);
+        color: var(--accent);
+        transition: transform 0.25s;
+      }
+
+      .acc-item.open .acc-trigger .chev {
+        transform: rotate(90deg);
+      }
+
+      .acc-panel {
+        display: none;
+        padding: 0 1rem 1rem;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        background: var(--bg-deep);
+      }
+
+      .acc-item.open .acc-panel {
+        display: block;
+        animation: fadeIn 0.25s ease;
+      }
+
+      .ref-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .ref-list li {
+        padding: 0.65rem 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: baseline;
+      }
+
+      .ref-list li:last-child {
+        border-bottom: none;
+      }
+
+      .ref-name {
+        font-weight: 600;
+        color: var(--text);
+        min-width: 140px;
+      }
+
+      footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+      }
+
+      .kbd {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        background: var(--bg-deep);
+        border: 1px solid var(--border);
+        color: var(--warn);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="top-bar">
+        <div class="brand">
+          <div class="brand-mark">CAN</div>
+          <div>
+            <h1>Industry Mock Design · PCAN Router</h1>
+            <p>自动驾驶驱动 Mock 设计最佳实践 — 工程控制台视图</p>
+          </div>
+        </div>
+        <div class="status-pill" title="Design review snapshot">SPEC 2026-03-28</div>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-overview"
+          id="tab-overview"
+          data-tab="overview"
+        >
+          核心结论
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-industry"
+          id="tab-industry"
+          data-tab="industry"
+        >
+          行业对标
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-pcan"
+          id="tab-pcan"
+          data-tab="pcan"
+        >
+          PCAN 设计
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-risks"
+          id="tab-risks"
+          data-tab="risks"
+        >
+          风险与缓解
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-refs"
+          id="tab-refs"
+          data-tab="refs"
+        >
+          参考链接
+        </button>
+      </nav>
+
+      <div class="panel">
+        <section
+          id="panel-overview"
+          class="tab-panel active"
+          role="tabpanel"
+          aria-labelledby="tab-overview"
+        >
+          <h2>核心结论</h2>
+          <div class="lead-grid">
+            <article class="card">
+              <h3>Link-time Mock</h3>
+              <p>
+                处理闭源驱动（如供应商 <span class="kbd">.so</span>）的成熟手段：在<strong>链接阶段</strong>替换头文件对应实现，隔离硬件依赖。
+              </p>
+            </article>
+            <article class="card">
+              <h3>Pluggable Backends</h3>
+              <p>行业标准：同一套驱动代码支持多种后端。</p>
+              <ul>
+                <li><strong>内存后端</strong> — CI 确定性测试，无网络开销。</li>
+                <li><strong>中间件后端</strong> — SIL/HIL，分布式与闭环控制。</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>Side-channel Injection</h3>
+              <p>
+                测试钩子可加速单测；<strong>发布版本必须严格隔离</strong>，避免注入面泄漏到生产路径。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section
+          id="panel-industry"
+          class="tab-panel"
+          role="tabpanel"
+          aria-labelledby="tab-industry"
+          hidden
+        >
+          <h2>行业标准对标（NVIDIA / Vector / ROS 2 / Autoware）</h2>
+          <p style="margin: 0 0 0.75rem; color: var(--text-muted); font-size: 0.9rem">
+            对比各方案的做法与价值，用于交叉验证 PCAN Router 的 Mock 分层策略。
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>方案 / 工具</th>
+                  <th>做法</th>
+                  <th>价值</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag">NVIDIA</span> DriveWorks</td>
+                  <td>虚拟传感器 (Virtual Sensors) / 回放接口</td>
+                  <td>
+                    同一套 API 支持真实硬件与文件回放，保证应用逻辑一致性。
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag">Vector</span> SIL Kit</td>
+                  <td>仿真总线 (Simulation Bus)</td>
+                  <td>
+                    中间件连接虚拟 ECU 与仿真引擎，支持复杂总线协议协同仿真。
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag">ROS 2</span> mock_components</td>
+                  <td>硬件接口 Mock 实现（<code>ros2_control</code> 插件）</td>
+                  <td>不带硬件即可测试控制器逻辑。</td>
+                </tr>
+                <tr>
+                  <td><span class="tag">Autoware</span></td>
+                  <td>Vehicle Interface 抽象</td>
+                  <td>
+                    底层车辆通信隐藏在 ROS 接口之后，以不同 package 适配硬件/仿真。
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="panel-pcan"
+          class="tab-panel"
+          role="tabpanel"
+          aria-labelledby="tab-pcan"
+          hidden
+        >
+          <h2>PCAN Router Driver — 设计与验证要点</h2>
+          <div class="lead-grid">
+            <article class="card">
+              <h3>Link-time Mocking</h3>
+              <p>
+                建议通过 Bazel 链接配置在 <span class="kbd">can_router_real</span> 与
+                <span class="kbd">can_router_mock</span> 之间切换 — 与调研结论一致。
+              </p>
+            </article>
+            <article class="card">
+              <h3>分层注入</h3>
+              <ul>
+                <li>
+                  <strong>CI</strong>：内存队列 + <code>Mock_PushMcuFrame()</code>，追求速度与确定性。
+                </li>
+                <li>
+                  <strong>仿真</strong>：中间件（如 DDS）中转，对接外部仿真（Carla 等）。
+                </li>
+              </ul>
+            </article>
+          </div>
+
+          <h2 style="margin-top: 1.5rem">数据形态：Raw CanFrame → Pre-packaged Payload</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem">
+            将上层从「逐帧原始 CAN」推进到「已打包、可版本化的载荷」，便于 Mock
+            与真实路径共享同一语义层，减少 Dual Reality。
+          </p>
+          <div class="flow" aria-label="Data shape transition">
+            <div class="flow-step">
+              <strong>RAW</strong>
+              底层 <code>CanFrame</code> / 字节流
+            </div>
+            <span class="flow-arrow" aria-hidden="true">→</span>
+            <div class="flow-step">
+              <strong>SEMANTIC</strong>
+              路由 / 聚合 / 校验
+            </div>
+            <span class="flow-arrow" aria-hidden="true">→</span>
+            <div class="flow-step">
+              <strong>PAYLOAD</strong>
+              预打包 MCU / 业务载荷
+            </div>
+          </div>
+
+          <h2 style="margin-top: 1.25rem">故障注入：Action Sequence</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 0.75rem">
+            用<strong>可编排的动作序列</strong>（延迟、丢帧、错误 DLC、断链重连等）驱动 Mock
+            后端，而非散落的全局标志位 — 与 Side-channel 测试钩子配合，但需在 Release
+            构建中剔除。
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>阶段</th>
+                  <th>动作示例</th>
+                  <th>目的</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Priming</td>
+                  <td>连接建立、版本握手</td>
+                  <td>验证状态机与超时</td>
+                </tr>
+                <tr>
+                  <td>Steady</td>
+                  <td>周期帧、正常载荷</td>
+                  <td>回归与性能基线</td>
+                </tr>
+                <tr>
+                  <td>Fault</td>
+                  <td>注入序列：延迟 → 突发丢帧 → 恢复</td>
+                  <td>重连、缓冲与告警路径</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="panel-risks"
+          class="tab-panel"
+          role="tabpanel"
+          aria-labelledby="tab-risks"
+          hidden
+        >
+          <h2>潜在风险与缓解</h2>
+          <div class="accordion">
+            <div class="acc-item open">
+              <button type="button" class="acc-trigger" aria-expanded="true">
+                <span>Dual Reality — 测试与真实 I/O 行为背离</span>
+                <span class="chev" aria-hidden="true">›</span>
+              </button>
+              <div class="acc-panel">
+                保留 <strong>Nightly 集成测试</strong>覆盖真实 I/O
+                路径，避免 Mock 绿、实车红。
+              </div>
+            </div>
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span>ABI / API Drift — 供应商头文件更新</span>
+                <span class="chev" aria-hidden="true">›</span>
+              </button>
+              <div class="acc-panel">
+                在 CI 中加入 <code>static_assert</code> 或偏移量检查，监控 Mock 与 Real
+                结构体一致性。
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="panel-refs"
+          class="tab-panel"
+          role="tabpanel"
+          aria-labelledby="tab-refs"
+          hidden
+        >
+          <h2>参考链接</h2>
+          <ul class="ref-list">
+            <li>
+              <span class="ref-name">Vector SIL Kit</span>
+              <a
+                href="https://vectorgrp.github.io/sil-kit-docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                >vectorgrp.github.io/sil-kit-docs</a
+              >
+            </li>
+            <li>
+              <span class="ref-name">NVIDIA DriveWorks Replay</span>
+              <a
+                href="https://docs.nvidia.com/drive/driveworks-3.5/sensors_usecase5.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >DriveWorks 传感器回放用例</a
+              >
+            </li>
+            <li>
+              <span class="ref-name">ROS 2 Mock Components</span>
+              <a
+                href="https://docs.ros.org/en/humble/p/hardware_interface/doc/mock_components_userdoc.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >mock_components 用户文档</a
+              >
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <footer>
+        Tranxmart · PCAN Router design notes · Single-file spec viewer · Compatible with dark IDE themes
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var tabs = document.querySelectorAll(".tab-btn");
+        var panels = document.querySelectorAll(".tab-panel");
+
+        function activate(name) {
+          tabs.forEach(function (btn) {
+            var sel = btn.getAttribute("data-tab") === name;
+            btn.setAttribute("aria-selected", sel ? "true" : "false");
+          });
+          panels.forEach(function (panel) {
+            var id = panel.id.replace("panel-", "");
+            var on = id === name;
+            panel.classList.toggle("active", on);
+            panel.hidden = !on;
+          });
+        }
+
+        tabs.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            activate(btn.getAttribute("data-tab"));
+          });
+        });
+
+        function syncAccordionItem(item) {
+          var trigger = item.querySelector(".acc-trigger");
+          var isOpen = item.classList.contains("open");
+          if (trigger) {
+            trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          }
+        }
+
+        document.querySelectorAll(".acc-item").forEach(syncAccordionItem);
+
+        document.querySelectorAll(".acc-trigger").forEach(function (trigger) {
+          trigger.addEventListener("click", function () {
+            var item = trigger.closest(".acc-item");
+            var willOpen = !item.classList.contains("open");
+            document.querySelectorAll(".acc-item").forEach(function (i) {
+              i.classList.toggle("open", i === item && willOpen);
+              syncAccordionItem(i);
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
